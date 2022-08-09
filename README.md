@@ -1,1 +1,2 @@
-# Feather-Forum
+# FeatherForum
+A forum system
