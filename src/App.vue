@@ -52,7 +52,7 @@
 
           </div>
           <el-scrollbar>
-            <router-view :key="this.$route.fullPath" />
+            <router-view :key="$route.fullPath" />
           </el-scrollbar>
         </el-main>
         <el-divider />

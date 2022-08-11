@@ -19,10 +19,7 @@ log = getLogger("rich")
 conn = connect("data.db3", check_same_thread=False)
 c = conn.cursor()
 app = Flask(__name__)
-# cors = CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080"}})
 cors = CORS(app)
-# app.config['CORS_HEADERS'] = 'Content-Type'
-# app.config['CORS_ALLOW_HEADERS']=""
 log.info("Feather Forum 正在启动")
 
 
@@ -65,7 +62,7 @@ def validate_authkey(authkey: str):
         log.info(time())
         log.info(dtime)
         log.info(int(getConfigByKey('authKeyTime')))
-        if(time() < dtime+int(getConfigByKey('authKeyTime'))):
+        if(time() > dtime+int(getConfigByKey('authKeyTime'))):
             obj.update({"name": dname,
                         "uid": duid,
                         "email": demail,
@@ -260,12 +257,7 @@ def apiPostRead():
     return build_request(code.REQUEST_BAD_QUERY, "帖子不存在")
 
 
-@app.route("/api")
-def apiTime():
-    return dumps({"time": time()})
-
-
 log.info("Feather Forum 完成注册")
 log.info("Feather Forum 已启动")
-app.run("127.0.0.1", port=14524, debug=True)
+app.run("0.0.0.0", port=14524, debug=True)
 c.close()

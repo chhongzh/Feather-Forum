@@ -28,7 +28,7 @@ def asker(question, default: bool = True):
         k = console.input('[b]{} ({})'.format(
             question, 'Y/n' if default else 'N/y'))
     except (KeyboardInterrupt, EOFError):
-        return default
+        return not default
     if(k.lower() == 'y'):
         return True
     elif(k.lower() == 'n'):
@@ -39,7 +39,7 @@ def asker(question, default: bool = True):
         return default
 
 
-def jsonler(url, env='https://raw.githubusercontent.com/chhongzh/FeatherForum/develop'):
+def jsonler(url, env='https://raw.githubusercontent.com/chhongzh/Feather-Forum/dev'):
     try:
         idx = get(
             env+url).json()
@@ -57,7 +57,7 @@ def safer(path, content):
         f.write(content)
 
 
-def downder(url, env='https://raw.githubusercontent.com/chhongzh/FeatherForum/develop'):
+def downder(url, env='https://raw.githubusercontent.com/chhongzh/Feather-Forum/dev'):
     try:
         idx = get(
             env+url).text
@@ -68,21 +68,10 @@ def downder(url, env='https://raw.githubusercontent.com/chhongzh/FeatherForum/de
         raise SystemError()
 
 
-def md5er(path):
-    m = hashlib.md5()  # 创建md5对象
-    with open(path, 'rb') as fobj:
-        while True:
-            data = fobj.read(1024)
-            if not data:
-                break
-            m.update(data)  # 更新md5对象
-
-    return m.hexdigest()  # 返回md5对象
-
-
 console.print('欢迎使用FeatherForum安装程序')
 if(not asker('安装程序将完成一些任务,是否继续?')):
     raise SystemExit
+
 
 console.log('[b blue]执行 安装依赖')
 with console.status('[b blue]执行 安装依赖'):
@@ -92,15 +81,19 @@ with console.status('[b blue]执行 安装依赖'):
         pip(['install', pack])
         console.log(f'[b blue]安装{pack}完成!')
 
-    console.log('[b bold]完成 所有依赖安装完成!')
+    console.log('[b blue]完成 所有依赖安装完成!')
 
+env = 'https://raw.githubusercontent.com/chhongzh/Feather-Forum/dev'
+if(not asker('使用Github下载源?(否则使用Gitee下载源)')):
+    env = 'https://gitee.com/huajixc/Feather-Forum/raw/dev'
 
 console.log('[b blue]下载 索引')
 try:
     idx = jsonler(
-        '/build.dist.json')
+        '/build.dist.json', env=env)
 except:
     console.log('[b red]网络错误,无法请求')
+    raise SystemError
 console.log('[b blue]下载 成功下载索引')
 
 try:
@@ -109,7 +102,7 @@ try:
 
     for i in track(idx, description='', total=len(idx), console=console):
         console.log(f'[b blue]下载 {i["name"]} 来自 {i["path"]}')
-        b = downder(i['path'])
+        b = downder(i['path'], env=env)
         safer('./'+i['path'], b)
 
         # sleep(0.25)
@@ -146,7 +139,7 @@ with open('./src/assets/js/config.js', 'w') as f:
         'baseURL': webserver,
     }
     import json
-    f.write("export default {"+json.dumps(obj)+"};")
+    f.write("export default "+json.dumps(obj)+";")
     console.log('[b bold]成功写入文件')
 
 with console.status('[b blue]执行 编译'):
@@ -160,4 +153,12 @@ with console.status('[b blue]执行 编译'):
     c = os.system('npm run build')
     console.log('[b blue]启动 编译模块 完成! 返回:{c}')
 
-console.log('[b blue]安装完成!')
+
+console.print('[b yellow]安装已完成!', justify='center')
+console.print('')
+console.print('接下来需要您[b]手动[/b]完成!')
+console.print('')
+console.print(f'打开 {os.path.join(u,"dist")} 将里面所有文件移动到您的网站根目录')
+console.print(f'打开 {os.path.join(u,"server")} 将里面所有文件移动到任意的文件夹')
+console.print(f'当需要启动服务器时,请先cd进您刚刚移动的文件夹')
+console.print('然后再执行python3 server.py')
