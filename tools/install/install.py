@@ -153,6 +153,23 @@ with console.status('[b blue]执行 编译'):
     c = os.system('npm run build')
     console.log('[b blue]启动 编译模块 完成! 返回:{c}')
 
+with console.status("[b blue]执行 初始化"):
+    import sqlite3
+    conn = sqlite3.connect('server/data.db3', check_same_thread=False)
+    c = conn.cursor()
+    c.execute('''
+    
+    -- 删除POST
+DELETE FROM post;
+UPDATE sqlite_sequence SET seq = 0 WHERE name = 'post';
+
+-- 删除用户
+DELETE FROM user;
+UPDATE sqlite_sequence SET seq = 0 WHERE name = 'user';
+
+    ''')
+    conn.commit()
+    conn.close()
 
 console.print('[b yellow]安装已完成!', justify='center')
 console.print('')
