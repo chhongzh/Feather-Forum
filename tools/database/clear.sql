@@ -1,3 +1,5 @@
+-- Feather Forum 重置数据库
+
 -- 删除POST
 DELETE FROM post;
 UPDATE sqlite_sequence SET seq = 0 WHERE name = 'post';
