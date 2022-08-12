@@ -39,7 +39,7 @@ def request_parse(req_data):
     return data
 
 
-def build_request(code: int, msg: str, **kwargs):
+def build_request(code: int, msg: str = "", **kwargs):
     obj = {}
     obj.update({"code": code})
     obj.update({"time": format(time(), '.3f')})
@@ -196,7 +196,7 @@ def apiListUser():
 @app.route("/api/user/count", methods=["GET"])
 def apiCountUser():
     log.info(
-        f"[客户端:{request.remote_addr}] 请求 -> 查看用户资料 | AuthKey:")
+        f"[客户端:{request.remote_addr}] 请求 -> 查看用户资料")
     for i in c.execute("SELECT count(*) FROM user"):
         return build_request(code.REQUEST_OK, "查询成功", count=i[0])
 
@@ -239,7 +239,7 @@ def apiWritePost():
 def apiPostRead():
     data = request_parse(request)
     if(data.get('authkey') is None or data.get('pid') is None):
-        return build_request(code.REQUEST_BAD_QUERY)
+        return build_request(code.REQUEST_BAD_QUERY, "参数缺少")
     if(not str(data.get('pid')).isdigit()):
         return build_request(code.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
     authkey = data.get('authkey')
