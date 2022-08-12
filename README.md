@@ -3,7 +3,7 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/chhongzh/Feather-Forum">
     <img src="images/FeatherForum.png" alt="Logo">
   </a>
   <h3 align="center">Best-Forum-System</h3>
@@ -11,12 +11,12 @@
   <p align="center">
     一个简单的论坛系统
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>前往官网 »</strong></a>
+    <a href="https://github.com/chhongzh/Feather-Forum"><strong>前往官网 »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/chhongzh/Feather-Forum">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/chhongzh/Feather-Forum/issues">Report Bug</a>
   </p>
 
 </div>
@@ -33,7 +33,7 @@
 
 ## 快速开始
 
-**在安装之前,您必须先安装[Node>=16][https://nodejs.org/zh-cn/download/current/]**和[Python3.9.6>=][https://www.python.org/downloads/]
+在安装之前,您必须先安装[Node>=16](https://nodejs.org/zh-cn/download/current/)和[Python3.9.6>=](https://www.python.org/downloads/)
 
 ### 手动编译
 
