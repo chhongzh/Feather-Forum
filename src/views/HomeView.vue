@@ -28,7 +28,7 @@
         <div>
           <el-row>
             <el-col :span="12">
-              <h4>共有:{{}}个会员</h4>
+              <h4>共有:{{ members }}个会员</h4>
             </el-col>
             <el-col :span="12">
               <h4>共有:{{}}个帖子</h4>
@@ -47,9 +47,17 @@
 export default {
   data() {
     return {
+      members: 0,
       post: ""
     }
   },
+  mounted() {
+    this.$http.get('/api/user/count').then((req) => {
+      console.log(req)
+    }).catch((req) => {
+      this.$message.error('网络错误');
+    })
+  }
 
 }
 </script>
