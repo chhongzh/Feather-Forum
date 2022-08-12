@@ -68,15 +68,15 @@ python install.py
 
 等待自动编译完成后打开新建的目录(目录名为安装时的时间戳),复制dist文件夹下所有文件到您的Ngnix或Apache的网页根目录下
 
-### 大功告成
+### 启动后端
 
-接下来你可已启动server文件夹下的server.py即可
+接下来你需要启动server文件夹下的server.py 即可
 
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 
-## License
+## 协议
 
-Distributed under the Apache 2.0 License. See `LICENSE` for more information.
+根据Apache 2.0许可证发布,有关更多信息,请参见`LICENSE`。
 
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 
