@@ -149,6 +149,11 @@ export default {
     }
   },
   mounted() {
+
+    this.$alert('您使用本网站必须同意 "<b>隐私条款</b>" 以及 "<b>Cookie协议</b>" <br /> 如果您不同意,请关闭本网页', '条款与协议', {
+      dangerouslyUseHTMLString: true
+    })
+
     var a = new Date()
     this.hideFeather = config.hideFeather
     this.year = a.getFullYear()
