@@ -62,7 +62,11 @@
           <b>{{ userAgent }}</b>
           <el-row>
             <el-col :span="8">
-              <p v-if="!hideFeather"><b>"{{ forumName }}"</b> 由 "<b>Feather Forum</b>" 提供支持</p>
+              <!-- <p v-if="!hideFeather"><b>"{{ forumName }}"</b> 由 "<b>Feather Forum</b>" 提供支持</p> -->
+              <p v-if="!hideFeather">"<b>{{ forumName }}</b>" 由 "<b>
+                  <el-link :underline="false" href="https://github.com/chhongzh/Feather-Forum">Feather Forum
+                  </el-link>
+                </b>" 提供支持</p>
               <p>Client响应:<b>{{ clientTime }}</b></p>
               <p v-if="logon">Server响应:<b>{{ serverTime }}</b></p>
               <p v-if="logon">响应时间:<b>{{ reduceTime }}</b></p>
