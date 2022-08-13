@@ -1,3 +1,4 @@
+from crypt import methods
 from time import time
 from hashlib import sha256
 from uuid import uuid4
@@ -189,8 +190,29 @@ def apiListUser():
             "avartar": davartar
         })
         obj.append(obj1)
-    for i in c.execute("SELECT count(*) FROM user"):
-        return build_request(code.REQUEST_OK, "查询成功", list=obj)
+
+    return build_request(code.REQUEST_OK, "查询成功", list=obj)
+
+
+@app.route("/api/user/top")
+def apiTopUser():
+    log.info(
+        f"[客户端:{request.remote_addr}] 请求 -> 查看最新用户")
+    obj = []
+    for dname, duid, dcoin, dtime, dlast, davartar in c.execute("""
+        SELECT name,uid,coin,time,last,avartar FROM user ORDER BY uid LIMIT 5
+    """):
+        obj1 = {}
+        obj1.update({
+            "name": dname,
+            "uid": duid,
+            "coin": dcoin,
+            "time": dtime,
+            "last": dlast,
+            "avartar": davartar
+        })
+        obj.append(obj1)
+    return build_request(code.REQUEST_OK, "查询成功", list=obj)
 
 
 @app.route("/api/user/count", methods=["GET"])
