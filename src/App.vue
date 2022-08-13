@@ -1,112 +1,111 @@
 <template>
-  <!-- <div class="mask"></div> -->
-  <el-row>
-    <el-col :span="3"></el-col>
-    <el-col :span="18">
+  <!-- <el-row> -->
+  <!-- <el-col :span="3"></el-col> -->
+  <!-- <el-col :span="18"> -->
 
 
-      <el-container>
-        <el-affix>
-          <el-header>
-            <el-menu mode="horizontal" :ellipsis="false" :router="true" :default-active="$route.path">
-              <el-menu-item index="/" style="font-size:14px">{{ forumName }}</el-menu-item>
-              <el-sub-menu index="帖子">
-                <template #title>帖子</template>
+  <el-container>
+    <el-affix>
+      <el-header>
+        <el-menu mode="horizontal" :ellipsis="false" :router="true" :default-active="$route.path">
+          <el-menu-item index="/" style="font-size:14px">{{ forumName }}</el-menu-item>
+          <el-sub-menu index="帖子">
+            <template #title>帖子</template>
 
 
-                <el-menu-item index="/post/write">发布</el-menu-item>
+            <el-menu-item index="/post/write">发布</el-menu-item>
 
-              </el-sub-menu>
-              <div class="flex-grow"></div>
+          </el-sub-menu>
+          <div class="flex-grow"></div>
 
-              <el-switch class="top" inline-prompt :inactive-icon="Moon" :active-icon="Sunny" v-model="switchModel"
-                @click="toggleDark()"></el-switch>
-              <div class="left-space"></div>
+          <el-switch class="top" inline-prompt :inactive-icon="Moon" :active-icon="Sunny" v-model="switchModel"
+            @click="toggleDark()"></el-switch>
+          <div class="left-space"></div>
 
-              <el-menu-item v-if="!logon" index="/login">
-                <el-space :size="5">
-                  <font-awesome-icon icon="fa-regular fa-circle-user" />
-                  登录
-                </el-space>
-              </el-menu-item>
-              <el-menu-item v-if="!logon" index="/register">
-                <el-space :size="5">
-                  <font-awesome-icon icon="fa-regular fa-clipboard" />
-                  注册
-                </el-space>
-              </el-menu-item>
-              <el-menu-item v-if="logon" index="/my">{{ uname }}</el-menu-item>
-            </el-menu>
-          </el-header>
-        </el-affix>
-        <el-main>
-          <!-- <h1 class="title">{{ $route.name }}</h1> -->
-          <div class="foot-space"></div>
-          <div v-show="!logon">
-            <el-card>
-              <div>
-                <p>访客,请先登录</p>
-              </div>
-            </el-card>
-            <div class="foot-space"></div>
-
+          <el-menu-item v-if="!logon" index="/login">
+            <el-space :size="5">
+              <font-awesome-icon icon="fa-regular fa-circle-user" />
+              登录
+            </el-space>
+          </el-menu-item>
+          <el-menu-item v-if="!logon" index="/register">
+            <el-space :size="5">
+              <font-awesome-icon icon="fa-regular fa-clipboard" />
+              注册
+            </el-space>
+          </el-menu-item>
+          <el-menu-item v-if="logon" index="/my">{{ uname }}</el-menu-item>
+        </el-menu>
+      </el-header>
+    </el-affix>
+    <el-main>
+      <!-- <h1 class="title">{{ $route.name }}</h1> -->
+      <div class="foot-space"></div>
+      <div v-show="!logon">
+        <el-card>
+          <div>
+            <p>访客,请先登录</p>
           </div>
-          <el-scrollbar>
-            <router-view :key="$route.fullPath" />
-          </el-scrollbar>
-        </el-main>
-        <el-divider />
-        <el-footer class="little">
-          <div class="foot-space"></div>
+        </el-card>
+        <div class="foot-space"></div>
 
-          <b>{{ userAgent }}</b>
-          <el-row>
-            <el-col :span="8">
-              <!-- <p v-if="!hideFeather"><b>"{{ forumName }}"</b> 由 "<b>Feather Forum</b>" 提供支持</p> -->
-              <p v-if="!hideFeather">"<b>{{ forumName }}</b>" 由 "<b>
-                  <el-link :underline="false" href="https://github.com/chhongzh/Feather-Forum">Feather Forum
-                  </el-link>
-                </b>" 提供支持</p>
-              <p>Client响应:<b>{{ clientTime }}</b></p>
-              <p v-if="logon">Server响应:<b>{{ serverTime }}</b></p>
-              <p v-if="logon">响应时间:<b>{{ reduceTime }}</b></p>
-            </el-col>
-            <el-col :span="8">
-              <p>
-                © Copyright {{ year }} {{ weblink }} All Rights Reserved
-              </p>
-              <p>
-                © {{ year }} {{ weblink }} 版权所有
-              </p>
-
-            </el-col>
-            <el-col :span="8">
-              <p><b>版权所有 侵权必究!</b></p>
-            </el-col>
-
-          </el-row>
-
-          <div class="foot-layout-right">
-            <p>
-              <router-link to="/help">
-                <el-link type="primary">帮助</el-link>
-              </router-link>
-              &nbsp;
-
-              <el-link type="primary" @click="changeReload">重新加载</el-link>
-
-            </p>
-
-          </div>
-
-        </el-footer>
-      </el-container>
-    </el-col>
-    <el-col :span="3">
-      <div>
       </div>
-    </el-col>
-  </el-row>
+      <el-scrollbar>
+        <router-view :key="$route.fullPath" />
+      </el-scrollbar>
+    </el-main>
+    <el-divider />
+    <el-footer class="little">
+      <div class="foot-space"></div>
+
+      <b>{{ userAgent }}</b>
+      <el-row>
+        <el-col :span="8">
+          <!-- <p v-if="!hideFeather"><b>"{{ forumName }}"</b> 由 "<b>Feather Forum</b>" 提供支持</p> -->
+          <p v-if="!hideFeather">"<b>{{ forumName }}</b>" 由 "<b>
+              <el-link :underline="false" href="https://github.com/chhongzh/Feather-Forum">Feather Forum
+              </el-link>
+            </b>" 提供支持</p>
+          <p>Client响应:<b>{{ clientTime }}</b></p>
+          <p v-if="logon">Server响应:<b>{{ serverTime }}</b></p>
+          <p v-if="logon">响应时间:<b>{{ reduceTime }}</b></p>
+        </el-col>
+        <el-col :span="8">
+          <p>
+            © Copyright {{ year }} {{ weblink }} All Rights Reserved
+          </p>
+          <p>
+            © {{ year }} {{ weblink }} 版权所有
+          </p>
+
+        </el-col>
+        <el-col :span="8">
+          <p><b>版权所有 侵权必究!</b></p>
+        </el-col>
+
+      </el-row>
+
+      <div class="foot-layout-right">
+        <p>
+          <router-link to="/help">
+            <el-link type="primary">帮助</el-link>
+          </router-link>
+          &nbsp;
+
+          <el-link type="primary" @click="changeReload">重新加载</el-link>
+
+        </p>
+
+      </div>
+
+    </el-footer>
+  </el-container>
+  <!-- </el-col> -->
+  <!-- <el-col :span="3"> -->
+  <div>
+  </div>
+  <!-- </el-col> -->
+  <!-- </el-row> -->
 
   <!-- Begain Dialog -->
   <el-dialog v-model="reloadDialog" title="重新加载?" width="30%">
@@ -135,7 +134,7 @@ export default {
   data() {
     return {
       year: 1970,
-      weblink: 'localhost:8080',
+      weblink: '',
       switchModel: '',
       userAgent: '',
       forumName: config.forumName,
@@ -149,10 +148,22 @@ export default {
     }
   },
   mounted() {
+    if (!localStorage.getItem('accept')) {
+      this.$alert('您使用本网站必须同意 "<b>隐私条款</b>" 以及 "<b>Cookie协议</b>" <br />继续使用则代表同意本条款<br /> 如果您不同意,请关闭本网页', '条款与协议', {
+        dangerouslyUseHTMLString: true,
+        confirmButtonText: '我接受',
+        callback: (action) => {
+          localStorage.setItem('accept', 'true')
+        }
+      })
+    }
 
-    this.$alert('您使用本网站必须同意 "<b>隐私条款</b>" 以及 "<b>Cookie协议</b>" <br /> 如果您不同意,请关闭本网页', '条款与协议', {
-      dangerouslyUseHTMLString: true
-    })
+
+    if (config.webhost == 'auto') {
+      this.weblink = document.domain
+    } else {
+      this.weblink = config.webhost
+    }
 
     var a = new Date()
     this.hideFeather = config.hideFeather

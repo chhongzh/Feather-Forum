@@ -2,17 +2,11 @@
 
 try:
     import os
-    import hashlib
-    from time import time, sleep
+    from time import time
     from rich.console import Console
     from requests import get
     from pip import main as pip
     from rich.progress import track
-    from rich.console import Group
-    from rich.text import Text
-    from rich.live import Live
-    from rich.panel import Panel
-    from subprocess import run
 except:
     print('安装依赖(Rich)')
     import pip
@@ -80,7 +74,8 @@ with console.status('[b blue]执行 安装依赖'):
         console.log(f'[b blue]安装{pack}')
         pip(['install', pack])
         console.log(f'[b blue]安装{pack}完成!')
-
+    console.log('[b blue]执行 安装Npm依赖')
+    os.system('npm install vue@next @vue/cli --location=global')
     console.log('[b blue]完成 所有依赖安装完成!')
 
 env = 'https://raw.githubusercontent.com/chhongzh/Feather-Forum/dev'
@@ -173,9 +168,4 @@ UPDATE sqlite_sequence SET seq = 0 WHERE name = 'user';
 
 console.print('[b yellow]安装已完成!', justify='center')
 console.print('')
-console.print('接下来需要您[b]手动[/b]完成!')
-console.print('')
-console.print(f'打开 {os.path.join(u,"dist")} 将里面所有文件移动到您的网站根目录')
-console.print(f'打开 {os.path.join(u,"server")} 将里面所有文件移动到任意的文件夹')
-console.print(f'当需要启动服务器时,请先cd进您刚刚移动的文件夹')
-console.print('然后再执行python3 server.py')
+console.print(f'所有文件已经安装在:{os.path.join(u,"dist")}文件夹内!')
