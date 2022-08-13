@@ -105,8 +105,6 @@ export default {
             this.$http.post("/api/authkey/v", {
                 authkey: ak
             }).then((res) => {
-                console.log(ak)
-                console.log(res)
                 if (res.data.data.authkey) {
                     this.$message.error("你已经登录过啦!")
                     this.$router.push("/")

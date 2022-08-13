@@ -53,11 +53,8 @@ export default {
                         this.pw = ""
                     } else {
                         this.$message.success(request.data.msg)
-                        // console.log(request.data)
                         localStorage.setItem('authkey', request.data.data.authkey)
-                        // console.log(useLocalStorage("authkey").value)
                         this.$router.push("/")
-                        // window.location.reload()
                     }
                 }).catch((error) => {
                     this.$message.error("登录失败,请检查网络连接!")
