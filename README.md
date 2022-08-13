@@ -22,15 +22,6 @@
 </div>
 
 
-## 关于本项目
-
-
-
-世界上有许多优秀的论坛系统，而**Feather-Forum**也是其中之一 可是,这些论坛大多是基于PHP等技术,这些不是我理想中的论坛系统,所以我下定决心开发了这款轻量级的论坛系统
-
-<p align="right">(<a href="#readme-top">返回顶部</a>)</p>
-
-
 ## 快速开始
 
 在安装之前,您必须先安装[Node>=16](https://nodejs.org/zh-cn/download/current/)和[Python3.9.6>=](https://www.python.org/downloads/)
