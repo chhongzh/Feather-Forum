@@ -1,42 +1,37 @@
 <template>
-  <!-- <div class="first"> -->
-  <!-- <img src="../assets/background-1.png" alt=""> -->
-  <!-- <div class="mask"></div> -->
-  <!-- <div class="box"/> -->
-  <!-- <h1>Apple_qwq ?</h1> -->
-  <!-- </div> -->
-  <!-- </div> -->
   <div>
-    <div>
-      <el-card>
-        <template #header>
-          <div class="card-header">
-            <span class="h2">公告</span>
-          </div>
-        </template>
-        <div v-html="post"></div>
-      </el-card>
-    </div>
     <div class="foot-space"></div>
     <div>
       <el-card>
-        <template #header>
-          <div class="card-header">
-            <span class="h2">统计</span>
-          </div>
-        </template>
         <div>
           <el-row>
             <el-col :span="12">
-              <h4>共有:{{ members }}个会员</h4>
+              <el-card header="新成员">
+                <div v-for="mem in mems" :key="mem">
+                  <router-link :to='`/user/${mem.uid}`'>
+                    <el-link>
+                      {{ mem.name }}
+                    </el-link>
+                  </router-link>
+
+                </div>
+              </el-card>
+
             </el-col>
             <el-col :span="12">
-              <h4>共有:{{}}个帖子</h4>
+              <el-card header="新帖子">
+                <div v-for="pst in psts" :key="pst">
+                  <router-link :to='`/post/${pst.pid}`'>
+                    <el-link>
+                      {{ pst.title }}
+                    </el-link>
+                  </router-link>
+
+                </div>
+              </el-card>
             </el-col>
 
           </el-row>
-
-
         </div>
       </el-card>
     </div>
@@ -48,12 +43,15 @@ export default {
   data() {
     return {
       members: 0,
-      post: ""
+      mems: {},
+      psts: {},
+      post: "",
+      temp: ""
     }
   },
   mounted() {
-    this.$http.get('/api/user/count').then((req) => {
-      console.log(req)
+    this.$http.get('/api/user/top').then((req) => {
+      this.mems = req.data.data.list
     }).catch((req) => {
       this.$message.error('网络错误');
     })
