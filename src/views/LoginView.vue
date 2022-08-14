@@ -1,17 +1,22 @@
 <template>
     <div>
-        <el-input @blur="checkName()" v-model="nm" size="large" placeholder="用户名"></el-input>
-        <p class="alert">{{ a }}</p>
-        <div class="space"></div>
-        <el-input @blur="checkPw()" type="password" v-model="pw" size="large" clearable show-password placeholder="密码">
-        </el-input>
-        <p class="alert">{{ b }}</p>
-        <div class="space"></div>
-        <el-button type="primary" @click="submit()" size="large">提交</el-button>
-        <div class="space"></div>
-        <router-link to="/register">
-            <el-link>没有账号?点我注册!</el-link>
-        </router-link>
+        <el-row type="flex" justify="center">
+            <el-card header="登录" class="login-box">
+                <el-input @blur="checkName()" v-model="nm" size="large" placeholder="用户名"></el-input>
+                <p class="alert">{{ a }}</p>
+                <div class="space"></div>
+                <el-input @blur="checkPw()" type="password" v-model="pw" size="large" clearable show-password
+                    placeholder="密码">
+                </el-input>
+                <p class="alert">{{ b }}</p>
+                <div class="space"></div>
+                <el-button type="primary" @click="submit()" size="large">提交</el-button>
+                <div class="space"></div>
+                <router-link to="/register">
+                    <el-link>没有账号?点我注册!</el-link>
+                </router-link>
+            </el-card>
+        </el-row>
     </div>
 </template>
 
@@ -35,7 +40,6 @@ export default {
                 if (res.data.data.authkey) {
                     this.$message.error("你已经登录过啦!")
                     this.$router.push("/")
-                    // this.$router.go(0)
                 }
             })
         }
