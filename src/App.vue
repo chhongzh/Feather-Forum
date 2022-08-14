@@ -54,7 +54,7 @@
         <router-view :key="$route.fullPath" />
       </el-scrollbar>
     </el-main>
-    <el-divider />
+    <!-- <el-divider /> -->
     <el-footer class="little">
       <div class="foot-space"></div>
 
@@ -67,8 +67,7 @@
               </el-link>
             </b>" 提供支持</p>
           <p>Client响应:<b>{{ clientTime }}</b></p>
-          <p v-if="logon">Server响应:<b>{{ serverTime }}</b></p>
-          <p v-if="logon">响应时间:<b>{{ reduceTime }}</b></p>
+
         </el-col>
         <el-col :span="8">
           <p>
@@ -81,6 +80,8 @@
         </el-col>
         <el-col :span="8">
           <p><b>版权所有 侵权必究!</b></p>
+          <p v-if="logon">Server响应:<b>{{ serverTime }}</b></p>
+          <p v-if="logon">响应时间:<b>{{ reduceTime }}</b></p>
         </el-col>
 
       </el-row>
@@ -277,6 +278,10 @@ export default {
 
 a {
   text-decoration: none;
+}
+
+.login-box {
+  width: 400px;
 }
 </style>
 
