@@ -1,3 +1,4 @@
+# ---------------------------------------------------------------------------
 from crypt import methods
 from time import time
 from hashlib import sha256
@@ -10,26 +11,48 @@ from rich import inspect
 from json import dumps, loads
 from logging import basicConfig, getLogger
 from flask_cors import *
-from c import code
+# from threading import Lock
 
+from lib.code import code
+from lib.lock import Lock
+from lib.cache import Cache
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
 FORMAT = "%(message)s"
 basicConfig(
     level="INFO", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
 )
 log = getLogger("rich")
-conn = connect("data.db3", check_same_thread=False)
-c = conn.cursor()
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
 app = Flask(__name__)
 cors = CORS(app)
+lock = Lock()
+cache = Cache()
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+conn = connect("data.db3", check_same_thread=False)
+c = conn.cursor()
+# ---------------------------------------------------------------------------
+
 log.info("Feather Forum 正在启动")
 
 
 def getConfigByKey(key: str) -> str:
+    if(cache.searchItem(key)):
+        return cache.getItem(key)
 
-    for i in c.execute(f"""
-    SELECT value FROM config WHERE "key"='{key}'
-    """):
-        return i[0]
+    if(lock.acquire()):
+        for i in c.execute(f"""
+        SELECT value FROM config WHERE "key"='{key}'
+        """):
+            lock.release()
+            cache.setItem(key, i[0])
+            return i[0]
+        lock.release()
 
 
 def request_parse(req_data):
@@ -56,26 +79,28 @@ def validate_authkey(authkey: str):
     obj = {}
     if(len(authkey) > 36 or len(authkey) < 36 or '-' not in authkey or '"' in authkey or "'" in authkey):
         return None
-    for dname, dpw, dlast, dtime, duid, duuid, davartar, dcoin, demail, dauthkey in c.execute(f"""
-    SELECT * FROM user WHERE "authkey"='{authkey}'
-    """):
-        log.info(time() > dtime+int(getConfigByKey('authKeyTime')))
-        log.info(time())
-        log.info(dtime)
-        log.info(int(getConfigByKey('authKeyTime')))
-        if(time() > dtime+int(getConfigByKey('authKeyTime'))):
-            obj.update({"name": dname,
-                        "uid": duid,
-                        "email": demail,
-                        "coin": dcoin,
-                        "regtime": dtime,
-                        "last": dlast,
-                        "avartar": davartar,
-                        "uuid": duuid})
-            break
-    else:
-        obj = None
-    return obj
+    ak = int(getConfigByKey('authKeyTime'))
+    if(lock.acquire()):
+
+        for dname, dpw, dlast, dtime, duid, duuid, davartar, dcoin, demail, dauthkey in c.execute(f"""
+        SELECT * FROM user WHERE "authkey"='{authkey}'
+        """):
+            if(time() > dtime+ak):
+                obj.update({"name": dname,
+                            "uid": duid,
+                            "email": demail,
+                            "coin": dcoin,
+                            "regtime": dtime,
+                            "last": dlast,
+                            "avartar": davartar,
+                            "uuid": duuid})
+                lock.release()
+                break
+        else:
+            obj = None
+        lock.release()
+        print(lock.getLock())
+        return obj
 
 
 def validate_email(email: str):
@@ -104,22 +129,20 @@ def apiRegister():
        ):
         log.info("[服务器] -> 错误请求")
         return build_request(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
-    for d in c.execute("SELECT name FROM user"):
-        if(data.get('name') == d[0]):
-            log.info("[服务器] -> 错误请求")
-            return build_request(code.REQUEST_USER_REG_ERROR, "用户名已存在")
-    if(not validate_email(data.get('email'))):
-        return build_request(code.REQUEST_USER_REG_ERROR, "邮箱错误")
+    for _ in c.execute(f"SELECT name FROM user WHERE name='{data.get('name')}'"):
+        return build_request(code.REQUEST_USER_REG_ERROR, "用户名已存在")
     name = data.get('name').replace("'", "''").replace('"', '""')
     pw = data.get('pw').replace("'", "''").replace('"', '""')
     email = data.get('email').replace("'", "''").replace('"', '""')
-    c.execute(f"""
-            INSERT INTO user (name,password,email,time,last,authkey,uuid)
-            VALUES ("{name}","{sha256(bytes(pw,encoding='utf8')).hexdigest()}","{email}",{
-                    int(time())},0,Null,"{uuid4()}")
-        """)
-    conn.commit()
-    return build_request(code.REQUEST_OK, "注册成功")
+    if(lock.acquire()):
+        c.execute(f"""
+                INSERT INTO user (name,password,email,time,last,authkey,uuid)
+                VALUES ("{name}","{sha256(bytes(pw,encoding='utf8')).hexdigest()}","{email}",{
+                        int(time())},0,Null,"{uuid4()}")
+            """)
+        conn.commit()
+        lock.release()
+        return build_request(code.REQUEST_OK, "注册成功")
 
 
 @app.route("/api/user/login", methods=["POST", "GET"])
@@ -131,16 +154,19 @@ def apiLogin():
        ):
         log.info("[服务器] -> 错误请求")
         return build_request(code.REQUEST_BAD_QUERY, "用户名或密码为空")
-    for dname, dpw, duid, demail, dcoin, dtime, dlast, dauthkey, duuid, davrtar in c.execute("""SELECT * FROM user"""):
-        if(dname == data.get('name') and dpw == sha256(bytes(data.get('pw'), encoding='utf8')).hexdigest()):
-            authkey = str(uuid4())
-            c.execute(f"""
-            UPDATE user SET "authkey"='{authkey}',"last"={int(time())} WHERE "name"='{dname}' and "password"='{dpw}'
-            """)
-            conn.commit()
-            return build_request(code.REQUEST_OK, "登录成功", authkey=authkey)
-    else:
-        return build_request(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
+    if(lock.acquire()):
+        for dname, dpw, duid, demail, dcoin, dtime, dlast, dauthkey, duuid, davrtar in c.execute(f"""SELECT * FROM user WHERE name='{data.get('name')}'"""):
+            if(dpw == sha256(bytes(data.get('pw'), encoding='utf8')).hexdigest()):
+                authkey = str(uuid4())
+                c.execute(f"""
+                UPDATE user SET "authkey"='{authkey}',"last"={int(time())} WHERE "name"='{dname}' and "password"='{dpw}'
+                """)
+                conn.commit()
+                lock.release()
+                return build_request(code.REQUEST_OK, "登录成功", authkey=authkey)
+            else:
+                lock.release()
+                return build_request(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
 
 
 @app.route("/api/user/info", methods=["POST"])
@@ -172,25 +198,28 @@ def apiInfo():
 @app.route("/api/user/list", methods=["GET"])
 def apiListUser():
     data = request_parse(request)
-    log.info(getConfigByKey('searchItemList'))
-    page = int(getConfigByKey('searchItemList')) * \
+    p = int(getConfigByKey('searchItemList'))
+    page = p * \
         data.get('page', default=0, type=int)
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 获取用户列表")
     obj = []
     log.info(
         f"[客户端:{request.remote_addr}] 请求 -> 查看用户列表 | 页:{page}")
-    for dname, duid, dcoin, dtime, dlast, davartar in c.execute(f"SELECT name,uid,coin,time,last,avartar FROM user LIMIT {int(getConfigByKey('searchItemList'))} OFFSET {page}"):
-        obj1 = {}
-        obj1.update({
-            "name": dname,
-            "uid": duid,
-            "coin": dcoin,
-            "time": dtime,
-            "last": dlast,
-            "avartar": davartar
-        })
-        obj.append(obj1)
-
+    if(lock.acquire()):
+        log.info(123)
+        for dname, duid, dcoin, dtime, dlast, davartar in c.execute(f"SELECT name,uid,coin,time,last,avartar FROM user LIMIT {p} OFFSET {page}"):
+            obj1 = {}
+            obj1.update({
+                "name": dname,
+                "uid": duid,
+                "coin": dcoin,
+                "time": dtime,
+                "last": dlast,
+                "avartar": davartar
+            })
+            obj.append(obj1)
+        lock.release()
+    lock.release()
     return build_request(code.REQUEST_OK, "查询成功", list=obj)
 
 
@@ -199,19 +228,21 @@ def apiTopUser():
     log.info(
         f"[客户端:{request.remote_addr}] 请求 -> 查看最新用户")
     obj = []
-    for dname, duid, dcoin, dtime, dlast, davartar in c.execute("""
-        SELECT name,uid,coin,time,last,avartar FROM user ORDER BY uid LIMIT 5
-    """):
-        obj1 = {}
-        obj1.update({
-            "name": dname,
-            "uid": duid,
-            "coin": dcoin,
-            "time": dtime,
-            "last": dlast,
-            "avartar": davartar
-        })
-        obj.append(obj1)
+    if(lock.acquire()):
+        for dname, duid, dcoin, dtime, dlast, davartar in c.execute("""
+            SELECT name,uid,coin,time,last,avartar FROM user ORDER BY uid LIMIT 5
+        """):
+            obj1 = {}
+            obj1.update({
+                "name": dname,
+                "uid": duid,
+                "coin": dcoin,
+                "time": dtime,
+                "last": dlast,
+                "avartar": davartar
+            })
+            obj.append(obj1)
+    lock.release()
     return build_request(code.REQUEST_OK, "查询成功", list=obj)
 
 
@@ -219,8 +250,11 @@ def apiTopUser():
 def apiCountUser():
     log.info(
         f"[客户端:{request.remote_addr}] 请求 -> 查看用户资料")
-    for i in c.execute("SELECT count(*) FROM user"):
-        return build_request(code.REQUEST_OK, "查询成功", count=i[0])
+    if(lock.acquire()):
+        for i in c.execute("SELECT count(*) FROM user"):
+            lock.release()
+
+            return build_request(code.REQUEST_OK, "查询成功", count=i[0])
 
 
 @app.route('/api/authkey/v', methods=["POST"])
@@ -228,9 +262,12 @@ def apiAuthkeyValidate():
     data = request_parse(request)
     if(data.get("authkey") is None):
         return build_request(code.REQUEST_BAD_QUERY, "缺少Authkey")
-    if(validate_authkey(data.get('authkey'))):
-        return build_request(code.REQUEST_OK, "有效的Authkey", authkey=True)
-    return build_request(code.REQUEST_BAD_AUTHKEY, "无效Authkey", authkey=False)
+    if(lock.acquire()):
+        if(validate_authkey(data.get('authkey'))):
+            lock.release()
+            return build_request(code.REQUEST_OK, "有效的Authkey", authkey=True)
+        lock.release()
+        return build_request(code.REQUEST_BAD_AUTHKEY, "无效Authkey", authkey=False)
 
 
 @app.route("/api/post/write", methods=["POST"])
@@ -247,12 +284,14 @@ def apiWritePost():
         ttime = int(time())
         content = content.replace('"', '""').replace("'", "''")
         title = title.replace('"', '""').replace("'", "''")
-        c.execute(f"""
-        INSERT INTO post (title,content,uid,time)
-        VALUES ('{title}', '{content}', {uid}, {ttime});
-        """)
-        conn.commit()
-        return build_request(code.REQUEST_OK, "帖子已经推送,等待审核")
+        if(lock.acquire()):
+            c.execute(f"""
+            INSERT INTO post (title,content,uid,time)
+            VALUES ('{title}', '{content}', {uid}, {ttime});
+            """)
+            conn.commit()
+            lock.release()
+            return build_request(code.REQUEST_OK, "帖子已经推送,等待审核")
     else:
         return build_request(code.REQUEST_BAD_AUTHKEY, "无法验证authkey")
 
@@ -268,15 +307,17 @@ def apiPostRead():
     pid = data.get('pid')
     log.info(
         f"[客户端:{request.remote_addr}] 请求 -> 查看帖子 | AuthKey:{authkey} Pid:{pid}")
-    for dtitle, dcontent, duid, dtime, dpid in c.execute(f"""
-    SELECT title,content,uid,time,pid FROM post WHERE pid={int(pid)}
-    """):
-        for dname in c.execute(f"SELECT name,uid FROM user WHERE uid = {int(duid)}"):
-            log.info(2)
-
-            return build_request(code.REQUEST_OK, "查询成功", title=dtitle, content=dcontent, time=dtime, name=dname[0])
+    if(lock.acquire()):
+        for dtitle, dcontent, duid, dtime, dpid in c.execute(f"""
+        SELECT title,content,uid,time,pid FROM post WHERE pid={int(pid)}
+        """):
+            for dname in c.execute(f"SELECT name,uid FROM user WHERE uid = {int(duid)}"):
+                lock.release()
+                return build_request(code.REQUEST_OK, "查询成功", title=dtitle, content=dcontent, time=dtime, name=dname[0])
+            lock.release()
+            return build_request(code.REQUEST_BAD_QUERY, "帖子不存在")
+        lock.release()
         return build_request(code.REQUEST_BAD_QUERY, "帖子不存在")
-    return build_request(code.REQUEST_BAD_QUERY, "帖子不存在")
 
 
 @app.route('/api/post/top')
@@ -284,17 +325,19 @@ def apiPostTop():
     log.info(
         f"[客户端:{request.remote_addr}] 请求 -> 查看最新帖子")
     obj = []
-    for dtitle, duid, dpid in c.execute("""
-        SELECT title,uid,pid FROM post ORDER BY uid LIMIT 5
-    """):
-        obj1 = {}
-        obj1.update({
-            "title": dtitle,
-            "uid": duid,
-            "pid": dpid
-        })
-        obj.append(obj1)
-    return build_request(code.REQUEST_OK, "查询成功", list=obj)
+    if(lock.acquire()):
+        for dtitle, duid, dpid in c.execute("""
+            SELECT title,uid,pid FROM post ORDER BY uid LIMIT 5
+        """):
+            obj1 = {}
+            obj1.update({
+                "title": dtitle,
+                "uid": duid,
+                "pid": dpid
+            })
+            obj.append(obj1)
+        lock.release()
+        return build_request(code.REQUEST_OK, "查询成功", list=obj)
 
 
 log.info("Feather Forum 完成注册")
