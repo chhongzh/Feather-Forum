@@ -279,6 +279,24 @@ def apiPostRead():
     return build_request(code.REQUEST_BAD_QUERY, "帖子不存在")
 
 
+@app.route('/api/post/top')
+def apiPostTop():
+    log.info(
+        f"[客户端:{request.remote_addr}] 请求 -> 查看最新帖子")
+    obj = []
+    for dtitle, duid, dpid in c.execute("""
+        SELECT title,uid,pid FROM post ORDER BY uid LIMIT 5
+    """):
+        obj1 = {}
+        obj1.update({
+            "title": dtitle,
+            "uid": duid,
+            "pid": dpid
+        })
+        obj.append(obj1)
+    return build_request(code.REQUEST_OK, "查询成功", list=obj)
+
+
 log.info("Feather Forum 完成注册")
 log.info("Feather Forum 已启动")
 app.run("0.0.0.0", port=14524, debug=True)
