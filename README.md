@@ -13,7 +13,7 @@
   <a href="https://github.com/chhongzh/Feather-Forum">
     <img src="images/FeatherForum.png" alt="Logo">
   </a>
-  <h3 align="center">Best-Forum-System</h3>
+  <h3 align="center">A-Forum-System</h3>
 
   <p align="center">
     一个简单的论坛系统
