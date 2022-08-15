@@ -11,7 +11,6 @@ from rich import inspect
 from json import dumps, loads
 from logging import basicConfig, getLogger
 from flask_cors import *
-# from threading import Lock
 
 from lib.code import code
 from lib.lock import Lock
@@ -82,10 +81,10 @@ def validate_authkey(authkey: str):
     ak = int(getConfigByKey('authKeyTime'))
     if(lock.acquire()):
 
-        for dname, dpw, dlast, dtime, duid, duuid, davartar, dcoin, demail, dauthkey in c.execute(f"""
+        for dname, _, dlast, dtime, duid, duuid, davartar, dcoin, demail, _ in c.execute(f"""
         SELECT * FROM user WHERE "authkey"='{authkey}'
         """):
-            if(time() > dtime+ak):
+            if(time() < dtime+ak):
                 obj.update({"name": dname,
                             "uid": duid,
                             "email": demail,
@@ -262,12 +261,10 @@ def apiAuthkeyValidate():
     data = request_parse(request)
     if(data.get("authkey") is None):
         return build_request(code.REQUEST_BAD_QUERY, "缺少Authkey")
-    if(lock.acquire()):
-        if(validate_authkey(data.get('authkey'))):
-            lock.release()
-            return build_request(code.REQUEST_OK, "有效的Authkey", authkey=True)
-        lock.release()
-        return build_request(code.REQUEST_BAD_AUTHKEY, "无效Authkey", authkey=False)
+
+    if(validate_authkey(data.get('authkey'))):
+        return build_request(code.REQUEST_OK, "有效的Authkey", authkey=True)
+    return build_request(code.REQUEST_BAD_AUTHKEY, "无效Authkey", authkey=False)
 
 
 @app.route("/api/post/write", methods=["POST"])
@@ -327,7 +324,7 @@ def apiPostTop():
     obj = []
     if(lock.acquire()):
         for dtitle, duid, dpid in c.execute("""
-            SELECT title,uid,pid FROM post ORDER BY uid LIMIT 5
+            SELECT title,uid,pid FROM post ORDER BY uid DESC LIMIT 5
         """):
             obj1 = {}
             obj1.update({
@@ -342,5 +339,5 @@ def apiPostTop():
 
 log.info("Feather Forum 完成注册")
 log.info("Feather Forum 已启动")
-app.run("0.0.0.0", port=14524, debug=True)
+app.run("0.0.0.0", port=14524, debug=True, threaded=True)
 c.close()
