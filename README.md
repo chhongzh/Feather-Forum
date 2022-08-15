@@ -33,7 +33,7 @@
 
 在安装之前,您必须先安装[Node>=16](https://nodejs.org/zh-cn/download/current/)和[Python3.9.6>=](https://www.python.org/downloads/)
 
-### 手动编译
+### 编译前端
 
 ```shell
 # 克隆仓库
@@ -49,22 +49,8 @@ npm run build
 ```
 
 等待编译完成后,复制dist文件夹下所有文件到您的Ngnix或Apache的网页根目录下
+**TIPS**:如果您想要预览而不是编译,请使用`npm run serve`
 
-### 自动编译
-
-```shell
-# 下载脚本
-wget https://raw.githubusercontent.com/chhongzh/Feather-Forum/dev/tools/install/install.py ./setup.py
-# or
-curl -o setup.py https://raw.githubusercontent.com/chhongzh/Feather-Forum/dev/tools/install/install.py
-
-# 执行脚本
-python3 install.py
-# or
-python install.py
-```
-
-等待自动编译完成后打开新建的目录(目录名为安装时的时间戳),复制dist文件夹下所有文件到您的Ngnix或Apache的网页根目录下
 
 ### 启动后端
 
