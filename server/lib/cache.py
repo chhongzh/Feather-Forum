@@ -10,7 +10,8 @@ class Cache(object):
     def setItem(self, itemName: str, item: object, expired: float = 0):
         self.checkExpired()
         self.data[itemName] = item
-        self.expired[itemName] = None if expired == 0 else expired+time()
+        if(expired > 0):
+            self.expired[itemName] == expired
 
     def removeItem(self, itemName):
         self.checkExpired()
@@ -37,7 +38,8 @@ class Cache(object):
         self.data.clear()
 
     def checkExpired(self):
-        for key in self.data.copy().keys():
+
+        for key in self.expired.copy().keys():
             if(time() > self.expired[key] and self.expired[key] is not None):
                 self.expired.pop(key)
                 self.data.pop(key)
