@@ -55,7 +55,6 @@ export default {
                         this.email = ""
                     } else {
                         this.$message.success(request.data.msg)
-                        // new Notification("你好世界", { body: "你好" })
                         this.$router.push("/login")
 
                     }
