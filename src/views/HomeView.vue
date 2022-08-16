@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="foot-space"></div>
     <div>
       <el-card>
         <div>
@@ -52,6 +51,11 @@ export default {
   mounted() {
     this.$http.get('/api/user/top').then((req) => {
       this.mems = req.data.data.list
+    }).catch((req) => {
+      this.$message.error('网络错误');
+    })
+    this.$http.get('/api/post/top').then((req) => {
+      this.psts = req.data.data.list
     }).catch((req) => {
       this.$message.error('网络错误');
     })
