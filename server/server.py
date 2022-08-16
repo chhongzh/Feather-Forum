@@ -110,8 +110,8 @@ def apiRegister():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 注册用户")
     data = request_parse(request)
     if (data.get('name', None) is None or
-            data.get('pw', None) is None or
-            data.get('email', None) is None
+        data.get('pw', None) is None or
+        data.get('email', None) is None
         ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
@@ -136,7 +136,7 @@ def apiLogin():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 登录用户")
     data = request_parse(request)
     if (data.get('name', None) is None or
-            data.get('pw', None) is None
+        data.get('pw', None) is None
         ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码为空")
@@ -184,7 +184,7 @@ def apiInfo():
 @app.route("/api/user/list", methods=["GET"])
 def apiListUser():
     data = request_parse(request)
-    p = int(getConfigByKey('searchItemList'))
+    p = int(getConfigByKey('itemLimit'))
     page = p * \
         data.get('page', default=0, type=int)
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 获取用户列表")
@@ -243,6 +243,21 @@ def apiCountUser():
             lock.release()
 
             return buildRequest(code.REQUEST_OK, "查询成功", count=i[0])
+
+
+@app.route("/api/user/page")
+def apiPageUser():
+    # 总页数=（总数+每页数量-1）/每页数量
+    total = 0
+    if (lock.acquire):
+        for i in c.execute("""
+        SELECT count(*) FROM user
+        """):
+            total = i[0]
+    lock.release()
+    page = int(getConfigByKey(''))
+
+    return ''
 
 
 @app.route('/api/authkey/v', methods=["POST"])
