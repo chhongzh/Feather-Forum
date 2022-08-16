@@ -22,25 +22,26 @@
             @click="toggleDark()"></el-switch>
           <div class="left-space"></div>
 
-          <el-menu-item v-if="!logon" index="/login">
+          <el-menu-item v-show="!logon" index="/login">
             <el-space :size="5">
               <font-awesome-icon icon="fa-regular fa-circle-user" />
               登录
             </el-space>
           </el-menu-item>
-          <el-menu-item v-if="!logon" index="/register">
+          <el-menu-item v-show="!logon" index="/register">
             <el-space :size="5">
               <font-awesome-icon icon="fa-regular fa-clipboard" />
               注册
             </el-space>
           </el-menu-item>
-          <el-menu-item v-if="logon" index="/my">{{ uname }}</el-menu-item>
+          <el-menu-item v-show="logon" index="/my">{{ uname }}</el-menu-item>
         </el-menu>
       </el-header>
     </el-affix>
     <el-main>
       <!-- <h1 class="title">{{ $route.name }}</h1> -->
       <div class="foot-space"></div>
+      <p>{{ $store.state.count }}</p>
       <div v-show="!logon">
         <el-card>
           <div>
@@ -103,8 +104,7 @@
   </el-container>
   <!-- </el-col> -->
   <!-- <el-col :span="3"> -->
-  <div>
-  </div>
+
   <!-- </el-col> -->
   <!-- </el-row> -->
 
@@ -118,6 +118,7 @@
       </span>
     </template>
   </el-dialog>
+
 </template>
 
 <script setup>
@@ -145,7 +146,9 @@ export default {
       clientTime: '请先登录',
       serverTime: '请先登录',
       reduceTime: '请先登录',
-      reloadDialog: false
+      reloadDialog: false,
+      loginDialog: true,
+      registerDialog: false,
     }
   },
   mounted() {
@@ -209,13 +212,60 @@ export default {
     },
     unreload() {
       this.changeReload()
+    },
+
+    // login
+    submitLogin() {
+      if (this.checkName() && this.checkPw()) {
+        this.$http.post("/api/user/login", {
+          name: this.nm,
+          pw: this.pw
+        }).then((request) => {
+          if (request.data.code == 1011) {
+            this.$message.error(request.data.msg)
+            this.nm = ""
+            this.pw = ""
+          } else {
+            this.$message.success(request.data.msg)
+            localStorage.setItem('authkey', request.data.data.authkey)
+            localStorage.setItem('needRef', '/')
+            this.$router.push("/")
+          }
+        }).catch((error) => {
+          this.$message.error("登录失败,请检查网络连接!")
+        })
+      }
+    },
+    checkNameLogin() {
+      if (this.nm == "") {
+        this.a = "填写此字段"
+        return false
+      }
+      this.a = ""
+
+      return true
+    },
+    checkPwLogin() {
+      if (this.pw == "") {
+        this.b = "填写此字段"
+        return false
+      }
+      this.b = ""
+
+      return true
     }
   }
 }
 </script>
 
 <style>
-@import url("./assets/fonts/fonts.css");
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  /* font-family: 'Nunito', 'Helvetica Neue', Helvetica, Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', sans-serif; */
+}
+
 
 .flex-grow {
   flex-grow: 1;
