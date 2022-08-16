@@ -58,6 +58,7 @@ export default {
                     } else {
                         this.$message.success(request.data.msg)
                         localStorage.setItem('authkey', request.data.data.authkey)
+                        localStorage.setItem('needRef', '/')
                         this.$router.push("/")
                     }
                 }).catch((error) => {
