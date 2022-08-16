@@ -25,8 +25,12 @@ export default {
                     console.log(res.data)
                 } else {
                     localStorage.removeItem('authkey')
+                    this.$router.push('/')
                 }
             })
+        } else {
+            this.$message.error('未登录');
+            this.$router.push('/')
         }
     },
     methods: {
