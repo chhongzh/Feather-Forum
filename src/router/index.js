@@ -33,15 +33,33 @@ const routes = [
     component: () => import("../views/PostView.vue"),
   },
   {
-    path: "/mics/reload",
-    name: "重新加载",
-    component: () => import("../views/ReloadView.vue"),
+    path: "/user",
+    name: "用户",
+    component: () => import("../views/UsersView.vue"),
   },
   {
     path: "/help",
     name: "帮助",
     component: () => import("../views/HelpView.vue"),
   },
+  // Start Admin
+
+  {
+    path: "/admin",
+    name: "管理员",
+    component: () => import("../views/admin/AdminView.vue"),
+    children: [
+      {
+        path: "index",
+        component: () => import("../views/admin/HomeView.vue"),
+      },
+    ],
+  },
+  {
+    path: "/admin/login",
+    component: () => import("../views/admin/LoginView.vue"),
+  },
+  // Close Admin
   {
     path: "/error/404",
     name: "错误",
