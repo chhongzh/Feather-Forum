@@ -1,4 +1,5 @@
 # ---------------------------------------------------------------------------
+from math import ceil
 from time import time
 from hashlib import sha256
 from uuid import uuid4
@@ -255,9 +256,11 @@ def apiPageUser():
         """):
             total = i[0]
     lock.release()
-    page = int(getConfigByKey(''))
+    page = int(getConfigByKey('itemLimit'))
+    total = (total+page-1) / page
+    total = ceil(total)
 
-    return ''
+    return buildRequest(code.REQUEST_OK, msg="查询成功", page=total-1)
 
 
 @app.route('/api/authkey/v', methods=["POST"])

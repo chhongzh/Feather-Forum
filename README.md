@@ -60,7 +60,7 @@ npm run build
 
 ## 协议
 
-根据Apache 2.0许可证发布,有关更多信息,请参见`LICENSE`。
+根据MIT许可证发布,有关更多信息,请参见`LICENSE`。
 
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 

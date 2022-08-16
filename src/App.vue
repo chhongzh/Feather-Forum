@@ -1,8 +1,4 @@
 <template>
-  <!-- <el-row> -->
-  <!-- <el-col :span="3"></el-col> -->
-  <!-- <el-col :span="18"> -->
-
 
   <el-container>
     <el-affix>
@@ -22,27 +18,25 @@
             @click="toggleDark()"></el-switch>
           <div class="left-space"></div>
 
-          <el-menu-item v-show="!logon" index="/login">
+          <el-menu-item v-show="!$store.state.login" index="/login">
             <el-space :size="5">
               <font-awesome-icon icon="fa-regular fa-circle-user" />
               登录
             </el-space>
           </el-menu-item>
-          <el-menu-item v-show="!logon" index="/register">
+          <el-menu-item v-show="!$store.state.login" index="/register">
             <el-space :size="5">
               <font-awesome-icon icon="fa-regular fa-clipboard" />
               注册
             </el-space>
           </el-menu-item>
-          <el-menu-item v-show="logon" index="/my">{{ uname }}</el-menu-item>
+          <el-menu-item v-show="$store.state.login" index="/my">{{ $store.state.name }}</el-menu-item>
         </el-menu>
       </el-header>
     </el-affix>
     <el-main>
-      <!-- <h1 class="title">{{ $route.name }}</h1> -->
       <div class="foot-space"></div>
-      <p>{{ $store.state.count }}</p>
-      <div v-show="!logon">
+      <div v-show="!$store.state.login">
         <el-card>
           <div>
             <p>访客,请先登录</p>
@@ -55,7 +49,6 @@
         <router-view :key="$route.fullPath" />
       </el-scrollbar>
     </el-main>
-    <!-- <el-divider /> -->
     <el-footer class="little">
       <div class="foot-space"></div>
 
@@ -81,8 +74,8 @@
         </el-col>
         <el-col :span="8">
           <p><b>版权所有 侵权必究!</b></p>
-          <p v-if="logon">Server响应:<b>{{ serverTime }}</b></p>
-          <p v-if="logon">响应时间:<b>{{ reduceTime }}</b></p>
+          <p v-if="$store.state.login">Server响应:<b>{{ serverTime }}</b></p>
+          <p v-if="$store.state.login">响应时间:<b>{{ reduceTime }}</b></p>
         </el-col>
 
       </el-row>
@@ -102,13 +95,7 @@
 
     </el-footer>
   </el-container>
-  <!-- </el-col> -->
-  <!-- <el-col :span="3"> -->
 
-  <!-- </el-col> -->
-  <!-- </el-row> -->
-
-  <!-- Begain Dialog -->
   <el-dialog v-model="reloadDialog" title="重新加载?" width="30%">
     <span>你确定要重新加载吗？<br>未保存的数据将会丢失!</span>
     <template #footer>
@@ -132,7 +119,6 @@ const toggleDark = useToggle(isDark)
 <script>
 import config from './assets/js/config.js'
 export default {
-  components: { Sunny, Moon, User },
   data() {
     return {
       year: 1970,
@@ -148,7 +134,7 @@ export default {
       reduceTime: '请先登录',
       reloadDialog: false,
       loginDialog: true,
-      registerDialog: false,
+      registerDialog: false
     }
   },
   mounted() {
@@ -184,8 +170,13 @@ export default {
           this.uname = res.data.data.name
           this.serverTime = res.data.time
           this.reduceTime = (this.serverTime - this.clientTime).toFixed(3)
+          this.$store.commit('login')
+          this.$store.commit('name', res.data.data.name)
         } else {
           localStorage.removeItem('authkey')
+          this.$store.commit('logout')
+          this.$store.commit('name', '')
+
         }
       })
     }
@@ -254,7 +245,8 @@ export default {
 
       return true
     }
-  }
+  },
+  // 监听,当路由发生变化的时候执行
 }
 </script>
 
