@@ -10,11 +10,12 @@ from rich.logging import RichHandler
 from rich import inspect
 from logging import basicConfig, getLogger
 from flask_cors import *
+from threading import Lock
 
 from lib.code import code
-from lib.lock import Lock
 from lib.cache import Cache
 from lib.request import buildRequest
+from lib.config import Config
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -30,6 +31,7 @@ app = Flask(__name__)
 cors = CORS(app)
 lock = Lock()
 cache = Cache()
+serverConfig = Config()
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -82,11 +84,11 @@ def validate_authkey(authkey: str):
                             "last": dlast,
                             "avartar": davartar,
                             "uuid": duuid})
-                lock.release()
                 break
         else:
             obj = None
         lock.release()
+
         return obj
 
 
@@ -111,9 +113,9 @@ def apiRegister():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 注册用户")
     data = request_parse(request)
     if (data.get('name', None) is None or
-        data.get('pw', None) is None or
-        data.get('email', None) is None
-        ):
+                data.get('pw', None) is None or
+                data.get('email', None) is None
+            ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
     for _ in c.execute(f"SELECT name FROM user WHERE name='{data.get('name')}'"):
@@ -137,8 +139,8 @@ def apiLogin():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 登录用户")
     data = request_parse(request)
     if (data.get('name', None) is None or
-        data.get('pw', None) is None
-        ):
+                data.get('pw', None) is None
+            ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码为空")
     if (lock.acquire()):
@@ -154,6 +156,7 @@ def apiLogin():
             else:
                 lock.release()
                 return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
+            return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
 
 
 @app.route("/api/user/info", methods=["POST"])
@@ -205,7 +208,6 @@ def apiListUser():
             })
             obj.append(obj1)
         lock.release()
-    lock.release()
     last = False
     if (len(obj) < p):
         last = True
@@ -250,12 +252,12 @@ def apiCountUser():
 def apiPageUser():
     # 总页数=（总数+每页数量-1）/每页数量
     total = 0
-    if (lock.acquire):
+    if (lock.acquire()):
         for i in c.execute("""
         SELECT count(*) FROM user
         """):
             total = i[0]
-    lock.release()
+        lock.release()
     page = int(getConfigByKey('itemLimit'))
     total = (total+page-1) / page
     total = ceil(total)
@@ -346,5 +348,6 @@ def apiPostTop():
 
 log.info("Feather Forum 完成注册")
 log.info("Feather Forum 已启动")
-app.run("0.0.0.0", port=14524, debug=True, threaded=True)
+app.run("0.0.0.0", port=serverConfig.ServerPort,
+        debug=serverConfig.UseDebugMode, threaded=True)
 c.close()
