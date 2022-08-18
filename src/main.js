@@ -9,7 +9,12 @@ import NProgress from "nprogress";
 import config from "./assets/js/config";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faCircleUser, faClipboard } from "@fortawesome/free-regular-svg-icons";
+import {
+  faCircleUser,
+  faClipboard,
+  faUser,
+  faClock,
+} from "@fortawesome/free-regular-svg-icons";
 
 import "./assets/js/prism.js";
 
@@ -83,7 +88,7 @@ router.afterEach(() => {
   NProgress.done();
 });
 
-library.add(faCircleUser, faClipboard);
+library.add(faCircleUser, faClipboard, faUser, faClock);
 
 app.use(store);
 app.use(router);
