@@ -113,8 +113,8 @@ def apiRegister():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 注册用户")
     data = request_parse(request)
     if (data.get('name', None) is None or
-                data.get('pw', None) is None or
-                data.get('email', None) is None
+            data.get('pw', None) is None or
+            data.get('email', None) is None
             ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
@@ -139,7 +139,7 @@ def apiLogin():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 登录用户")
     data = request_parse(request)
     if (data.get('name', None) is None or
-                data.get('pw', None) is None
+            data.get('pw', None) is None
             ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码为空")
@@ -156,7 +156,7 @@ def apiLogin():
             else:
                 lock.release()
                 return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
-            return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
+        return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
 
 
 @app.route("/api/user/info", methods=["POST"])
@@ -183,6 +183,32 @@ def apiInfo():
                             )
     else:
         return buildRequest(code.REQUEST_BAD_AUTHKEY, "不存在或过期的AuthKey", authkey=False)
+
+
+@app.route('/api/user/info/<uid>')
+def apiUserPublicInfo(uid: str):
+    if (not uid.isdigit()):
+        return buildRequest(code.REQUEST_BAD_QUERY, 'uid必须为数字')
+    uid = int(uid)
+    if (uid == 0 or uid < 0):
+        return buildRequest(code.REQUEST_BAD_QUERY, 'uid不合法')
+
+    if (lock.acquire()):
+        for dname, _, dlast, dtime, duid, duuid, davartar, dcoin, demail, _ in c.execute(f"""SELECT * FROM user WHERE uid='{uid}'"""):
+            lock.release()
+            return buildRequest(code.REQUEST_OK, "查询成功",
+                                name=dname,
+                                uid=duid,
+                                email=demail,
+                                coin=dcoin,
+                                time=dtime,
+                                last=dlast,
+                                uuid=duuid,
+                                avartar=davartar
+                                )
+
+        lock.release()
+        return buildRequest(code.REQUEST_BAD_QUERY, 'uid未找到')
 
 
 @app.route("/api/user/list", methods=["GET"])
@@ -250,7 +276,6 @@ def apiCountUser():
 
 @app.route("/api/user/page")
 def apiPageUser():
-    # 总页数=（总数+每页数量-1）/每页数量
     total = 0
     if (lock.acquire()):
         for i in c.execute("""
@@ -259,8 +284,7 @@ def apiPageUser():
             total = i[0]
         lock.release()
     page = int(getConfigByKey('itemLimit'))
-    total = (total+page-1) / page
-    total = ceil(total)
+    total = ceil(total/page)
 
     return buildRequest(code.REQUEST_OK, msg="查询成功", page=total-1)
 
