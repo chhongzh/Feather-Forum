@@ -19,7 +19,7 @@ export default {
         }
     },
     mounted() {
-        this.markdown = '# 写点什么吧'
+        this.markdown = ''
         var ak = localStorage.getItem('authkey')
         if (!ak) {
             this.$http.post("/api/authkey/v", {
