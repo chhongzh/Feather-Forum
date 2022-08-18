@@ -4,7 +4,11 @@
     <el-card shadow="hover">
         <template #header>
             <h1>{{ postTitle }}</h1>
-            <p>{{ postAuther }} - {{ postTime }}</p>
+            <p style="color:var(--el-text-color-regular)">
+                <font-awesome-icon icon="fa-regular fa-user" />&nbsp;{{ postAuther }}
+                &nbsp;&nbsp;
+                <font-awesome-icon icon="fa-regular fa-clock" />&nbsp;{{ postTime }}
+            </p>
         </template>
         <v-md-editor :model-value="postContent" mode="preview"></v-md-editor>
 
@@ -43,7 +47,7 @@ export default {
 
         }
         if (isNaN(this.$route.params.pid)) {
-            this.$message.error('帖子id是个数字');
+            this.$message.error('非法帖子id');
             this.$router.push('/')
         }
         this.$http.post('/api/post/read', {
