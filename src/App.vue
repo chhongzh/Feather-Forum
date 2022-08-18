@@ -12,11 +12,14 @@
             <el-menu-item index="/post/write">发布</el-menu-item>
 
           </el-sub-menu>
+          <el-sub-menu index="用户">
+            <template #title>用户</template>
+            <el-menu-item index="/user">用户列表</el-menu-item>
+          </el-sub-menu>
           <div class="flex-grow"></div>
-
-          <el-switch class="top" inline-prompt :inactive-icon="Moon" :active-icon="Sunny" v-model="switchModel"
+          <!-- <el-switch class="top" inline-prompt :inactive-icon="Moon" :active-icon="Sunny" v-model="switchModel"
             @click="toggleDark()"></el-switch>
-          <div class="left-space"></div>
+          <div class="left-space"></div> -->
 
           <el-menu-item v-show="!$store.state.login" index="/login">
             <el-space :size="5">
@@ -43,11 +46,9 @@
           </div>
         </el-card>
         <div class="foot-space"></div>
-
       </div>
-      <el-scrollbar>
-        <router-view :key="$route.fullPath" />
-      </el-scrollbar>
+      <router-view :key="$route.fullPath" />
+
     </el-main>
     <el-footer class="little">
       <div class="foot-space"></div>

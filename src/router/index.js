@@ -23,6 +23,11 @@ const routes = [
     component: () => import("../views/MyView.vue"),
   },
   {
+    path: "/user/:uid",
+    name: "用户",
+    component: () => import("../views/UserView.vue"),
+  },
+  {
     path: "/post/:pid",
     name: "帖子",
     component: () => import("../views/ReadPostView.vue"),
@@ -34,7 +39,7 @@ const routes = [
   },
   {
     path: "/user",
-    name: "用户",
+    name: "用户列表",
     component: () => import("../views/UsersView.vue"),
   },
   {
