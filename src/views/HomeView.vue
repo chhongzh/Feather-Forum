@@ -2,6 +2,7 @@
   <div>
     <div>
       <el-card>
+        <template #header><b>{{ forum }}</b></template>
         <div>
           <el-row>
             <el-col :span="12">
@@ -38,6 +39,7 @@
 </template>
 
 <script>
+import config from '../assets/js/config.js'
 export default {
   data() {
     return {
@@ -45,7 +47,8 @@ export default {
       mems: {},
       psts: {},
       post: "",
-      temp: ""
+      temp: "",
+      forum: ''
     }
   },
   mounted() {
@@ -59,6 +62,7 @@ export default {
     }).catch((req) => {
       this.$message.error('网络错误');
     })
+    this.forum = config.forumName
   }
 
 }
