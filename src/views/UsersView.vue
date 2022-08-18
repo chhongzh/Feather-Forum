@@ -3,26 +3,30 @@
         <el-empty v-show="mems.length <= 0" description="没有数据">
 
         </el-empty>
-        <el-card v-for="(mem, index) in mems" :key="index">
-            <template #header>
-                {{ mem.name }}
-            </template>
-            <el-descriptions>
-                <el-descriptions-item label="个性签名">
-                    {{ mem.avartar }}
-                </el-descriptions-item>
-                <el-descriptions-item label="UID">
-                    {{ mem.uid }}
-                </el-descriptions-item>
-                <el-descriptions-item label="金币">
-                    {{ mem.coin }}
-                </el-descriptions-item>
-                <el-descriptions-item label="注册时间">
-                    {{ mem.time }}
-                </el-descriptions-item>
+        <div v-for="(mem, index) in mems" :key="index">
+            <el-card>
+                <template #header>
+                    {{ mem.name }}
+                </template>
 
-            </el-descriptions>
-        </el-card>
+                <el-descriptions>
+                    <el-descriptions-item label="个性签名">
+                        {{ mem.avartar }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="UID">
+                        {{ mem.uid }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="金币">
+                        {{ mem.coin }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="注册时间">
+                        {{ mem.time }}
+                    </el-descriptions-item>
+
+                </el-descriptions>
+            </el-card>
+            <div class="foot-space"></div>
+        </div>
         <el-row type="flex" justify="center">
             <el-pagination :page-count="totalPage" @current-change="onChange" :hide-on-single-page="true"
                 v-model:current-page="page" layout="prev, pager, next, jumper">
@@ -32,6 +36,8 @@
 </template>
 
 <script>
+import { transformTime } from '@/assets/js/date.js'
+
 export default {
     data() {
         return {
@@ -51,10 +57,15 @@ export default {
         onChange() {
             this.$http(`/api/user/list?page=${this.page - 1}`).then((res) => {
                 this.mems = res.data.data.list
-                console.log(this.mems)
-            }).catch((res) => {
-                this.$message.error(res);
+                this.mems = []
+                for (var i = 0; i < res.data.data.list.length; i++) {
+                    res.data.data.list[i].time = transformTime(res.data.data.list[i].time * 1000)
+                    this.mems.push(res.data.data.list[i])
+                }
             })
+                .catch((res) => {
+                    this.$message.error(res);
+                })
         }
     }
 
