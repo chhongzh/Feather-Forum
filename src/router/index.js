@@ -28,6 +28,11 @@ const routes = [
     component: () => import("../views/UserView.vue"),
   },
   {
+    path: "/post",
+    name: "帖子列表",
+    component: () => import("../views/PostsView.vue"),
+  },
+  {
     path: "/post/:pid",
     name: "帖子",
     component: () => import("../views/ReadPostView.vue"),

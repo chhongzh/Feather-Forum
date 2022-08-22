@@ -1,6 +1,6 @@
 <template>
     <el-card>
-        <template #header><b>用户列表</b></template>
+        <template #header><b>帖子列表</b></template>
         <el-empty v-show="mems.length <= 0" description="没有数据">
 
         </el-empty>
