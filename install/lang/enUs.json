@@ -1,0 +1,7 @@
+{
+  "resetDb": {
+    "ing": "Initializing DB file...",
+    "finish": "DB file initialization succeeded!",
+    "error": "Initialization failed!"
+  }
+}
