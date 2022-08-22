@@ -1,11 +1,17 @@
+# ---------------------------------------------------------------------------
 from lib.database import getConfigByKey
 from . import share
 from time import time
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
 lock = share.lock
 log = share.log
 c = share.c
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 def validate_authkey(authkey: str):
     obj = {}
     if (len(authkey) > 36 or len(authkey) < 36 or '-' not in authkey or '"' in authkey or "'" in authkey):
@@ -32,3 +38,4 @@ def validate_authkey(authkey: str):
         lock.release()
 
         return obj
+# ---------------------------------------------------------------------------
