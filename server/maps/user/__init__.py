@@ -25,6 +25,7 @@ blueprint = Blueprint('user', __name__, url_prefix='/api/user')
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/register", methods=["POST"])
 def apiRegister():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 注册用户")
@@ -32,7 +33,7 @@ def apiRegister():
     if (data.get('name', None) is None or
             data.get('pw', None) is None or
             data.get('email', None) is None
-            ):
+        ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
     for _ in c.execute(f"SELECT name FROM user WHERE name='{data.get('name')}'"):
@@ -49,15 +50,17 @@ def apiRegister():
         conn.commit()
         lock.release()
         return buildRequest(code.REQUEST_OK, "注册成功")
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/login", methods=["POST", "GET"])
 def apiLogin():
     log.info(f"[客户端:{request.remote_addr}] 请求 -> 登录用户")
     data = request_parse(request)
     if (data.get('name', None) is None or
             data.get('pw', None) is None
-            ):
+        ):
         log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码为空")
     if (lock.acquire()):
@@ -74,8 +77,10 @@ def apiLogin():
                 lock.release()
                 return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
         return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/info", methods=["POST"])
 def apiInfo():
     data = request_parse(request)
@@ -100,8 +105,10 @@ def apiInfo():
                             )
     else:
         return buildRequest(code.REQUEST_BAD_AUTHKEY, "不存在或过期的AuthKey", authkey=False)
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route('/info/<uid>')
 def apiUserPublicInfo(uid: str):
     if (not uid.isdigit()):
@@ -126,8 +133,10 @@ def apiUserPublicInfo(uid: str):
 
         lock.release()
         return buildRequest(code.REQUEST_BAD_QUERY, 'uid未找到')
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/list", methods=["GET"])
 def apiListUser():
     data = request_parse(request)
@@ -155,8 +164,10 @@ def apiListUser():
     if (len(obj) < p):
         last = True
     return buildRequest(code.REQUEST_OK, "查询成功", list=obj, last=last)
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/top")
 def apiTopUser():
     log.info(
@@ -178,8 +189,10 @@ def apiTopUser():
             obj.append(obj1)
     lock.release()
     return buildRequest(code.REQUEST_OK, "查询成功", list=obj)
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/count", methods=["GET"])
 def apiCountUser():
     log.info(
@@ -189,8 +202,10 @@ def apiCountUser():
             lock.release()
 
             return buildRequest(code.REQUEST_OK, "查询成功", count=i[0])
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/page")
 def apiPageUser():
     total = 0
@@ -204,7 +219,4 @@ def apiPageUser():
     total = ceil(total/page)
 
     return buildRequest(code.REQUEST_OK, msg="查询成功", page=total-1)
-
-
-
-
+# ---------------------------------------------------------------------------

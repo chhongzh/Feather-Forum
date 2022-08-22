@@ -21,6 +21,7 @@ blueprint = Blueprint('post', __name__, url_prefix='/api/post')
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/write", methods=["POST"])
 def apiWritePost():
     data = request_parse(request)
@@ -45,8 +46,10 @@ def apiWritePost():
             return buildRequest(code.REQUEST_OK, "帖子已经推送,等待审核")
     else:
         return buildRequest(code.REQUEST_BAD_AUTHKEY, "无法验证authkey")
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route('/read', methods=["POST"])
 def apiPostRead():
     data = request_parse(request)
@@ -69,8 +72,10 @@ def apiPostRead():
             return buildRequest(code.REQUEST_BAD_QUERY, "帖子不存在")
         lock.release()
         return buildRequest(code.REQUEST_BAD_QUERY, "帖子不存在")
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route('/top')
 def apiPostTop():
     log.info(
@@ -89,8 +94,10 @@ def apiPostTop():
             obj.append(obj1)
         lock.release()
         return buildRequest(code.REQUEST_OK, "查询成功", list=obj)
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 @blueprint.route("/list", methods=["GET"])
 def apiListPost():
     data = request_parse(request)
@@ -118,3 +125,4 @@ def apiListPost():
     if (len(obj) < p):
         last = True
     return buildRequest(code.REQUEST_OK, "查询成功", list=obj, last=last)
+# ---------------------------------------------------------------------------
