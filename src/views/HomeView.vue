@@ -7,6 +7,7 @@
           <el-row>
             <el-col :span="12">
               <el-card header="新成员">
+                <el-empty v-show="mems.length <= 0" description="没有数据"></el-empty>
                 <div v-for="mem in mems" :key="mem">
                   <router-link :to='`/user/${mem.uid}`'>
                     <el-link>
@@ -20,6 +21,8 @@
             </el-col>
             <el-col :span="12">
               <el-card header="新帖子">
+                <el-empty v-show="psts.length <= 0" description="没有数据"></el-empty>
+
                 <div v-for="pst in psts" :key="pst">
                   <router-link :to='`/post/${pst.pid}`'>
                     <el-link>
