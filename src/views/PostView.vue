@@ -50,6 +50,10 @@ export default {
             return true
         },
         post() {
+            if (this.isEmpty(this.markdown)) {
+                this.$message.error('内容不能为空');
+                return false
+            }
             if (this.checkTitle()) {
                 console.log(this.markdown)
                 this.$http.post('/api/post/write', {
@@ -65,6 +69,14 @@ export default {
                 })
             }
 
+
+        },
+        isEmpty(obj) {
+            if (typeof obj == "undefined" || obj == null || obj == "") {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
