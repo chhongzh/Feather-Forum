@@ -27,14 +27,12 @@ blueprint = Blueprint('user', __name__, url_prefix='/api/user')
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/register", methods=["POST"])
-def apiRegister():
-    log.info(f"[客户端:{request.remote_addr}] 请求 -> 注册用户")
+def Register():
     data = request_parse(request)
     if (data.get('name', None) is None or
             data.get('pw', None) is None or
             data.get('email', None) is None
         ):
-        log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
     for _ in c.execute(f"SELECT name FROM user WHERE name='{data.get('name')}'"):
         return buildRequest(code.REQUEST_USER_REG_ERROR, "用户名已存在")
@@ -55,13 +53,11 @@ def apiRegister():
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/login", methods=["POST", "GET"])
-def apiLogin():
-    log.info(f"[客户端:{request.remote_addr}] 请求 -> 登录用户")
+def Login():
     data = request_parse(request)
     if (data.get('name', None) is None or
             data.get('pw', None) is None
         ):
-        log.info("[服务器] -> 错误请求")
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码为空")
     if (lock.acquire()):
         for dname, dpw, duid, demail, dcoin, dtime, dlast, dauthkey, duuid, davrtar in c.execute(f"""SELECT * FROM user WHERE name='{data.get('name')}'"""):
@@ -82,15 +78,13 @@ def apiLogin():
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/info", methods=["POST"])
-def apiInfo():
+def Info():
     data = request_parse(request)
     authkey = data.get('authkey')
     if (authkey is None or '"' in authkey or "'" in authkey or len(authkey) > 36 or len(authkey) < 36 or '-' not in authkey):
         return buildRequest(code.REQUEST_BAD_QUERY, "无效的AuthKey")
     ak = validate_authkey(authkey)
     if (ak):
-        log.info(
-            f"[客户端:{request.remote_addr}] 请求 -> 查看用户资料 | AuthKey:{authkey}")
 
         return buildRequest(code.REQUEST_OK, "有效的AuthKey",
                             name=ak["name"],
@@ -110,7 +104,7 @@ def apiInfo():
 
 # ---------------------------------------------------------------------------
 @blueprint.route('/info/<uid>')
-def apiUserPublicInfo(uid: str):
+def UserPublicInfo(uid: str):
     if (not uid.isdigit()):
         return buildRequest(code.REQUEST_BAD_QUERY, 'uid必须为数字')
     uid = int(uid)
@@ -138,15 +132,12 @@ def apiUserPublicInfo(uid: str):
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/list", methods=["GET"])
-def apiListUser():
+def ListUser():
     data = request_parse(request)
     p = int(getConfigByKey('itemLimit'))
     page = p * \
         data.get('page', default=0, type=int)
-    log.info(f"[客户端:{request.remote_addr}] 请求 -> 获取用户列表")
     obj = []
-    log.info(
-        f"[客户端:{request.remote_addr}] 请求 -> 查看用户列表 | 页:{page}")
     if (lock.acquire()):
         for dname, duid, dcoin, dtime, dlast, davartar in c.execute(f"SELECT name,uid,coin,time,last,avartar FROM user LIMIT {p} OFFSET {page}"):
             obj1 = {}
@@ -169,9 +160,7 @@ def apiListUser():
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/top")
-def apiTopUser():
-    log.info(
-        f"[客户端:{request.remote_addr}] 请求 -> 查看最新用户")
+def TopUser():
     obj = []
     if (lock.acquire()):
         for dname, duid, dcoin, dtime, dlast, davartar in c.execute("""
@@ -194,9 +183,7 @@ def apiTopUser():
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/count", methods=["GET"])
-def apiCountUser():
-    log.info(
-        f"[客户端:{request.remote_addr}] 请求 -> 查看用户资料")
+def CountUser():
     if (lock.acquire()):
         for i in c.execute("SELECT count(*) FROM user"):
             lock.release()
@@ -207,7 +194,7 @@ def apiCountUser():
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/page")
-def apiPageUser():
+def PageUser():
     total = 0
     if (lock.acquire()):
         for i in c.execute("""

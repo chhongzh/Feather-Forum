@@ -19,7 +19,7 @@ c = conn.cursor()
 # ---------------------------------------------------------------------------
 FORMAT = "%(message)s"
 basicConfig(
-    level="INFO", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+    level="DEBUG", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
 )
 log = getLogger("rich")
 # ---------------------------------------------------------------------------

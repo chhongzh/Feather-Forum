@@ -23,7 +23,7 @@ blueprint = Blueprint('post', __name__, url_prefix='/api/post')
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/write", methods=["POST"])
-def apiWritePost():
+def WritePost():
     data = request_parse(request)
     authkey = data.get('authkey')
     title = data.get('title')
@@ -51,16 +51,13 @@ def apiWritePost():
 
 # ---------------------------------------------------------------------------
 @blueprint.route('/read', methods=["POST"])
-def apiPostRead():
+def PostRead():
     data = request_parse(request)
     if (data.get('authkey') is None or data.get('pid') is None):
         return buildRequest(code.REQUEST_BAD_QUERY, "参数缺少")
     if (not str(data.get('pid')).isdigit()):
         return buildRequest(code.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
-    authkey = data.get('authkey')
     pid = data.get('pid')
-    log.info(
-        f"[客户端:{request.remote_addr}] 请求 -> 查看帖子 | AuthKey:{authkey} Pid:{pid}")
     if (lock.acquire()):
         for dtitle, dcontent, duid, dtime, dpid in c.execute(f"""
         SELECT title,content,uid,time,pid FROM post WHERE pid={int(pid)}
@@ -77,9 +74,7 @@ def apiPostRead():
 
 # ---------------------------------------------------------------------------
 @blueprint.route('/top')
-def apiPostTop():
-    log.info(
-        f"[客户端:{request.remote_addr}] 请求 -> 查看最新帖子")
+def PostTop():
     obj = []
     if (lock.acquire()):
         for dtitle, duid, dpid in c.execute("""
@@ -99,15 +94,12 @@ def apiPostTop():
 
 # ---------------------------------------------------------------------------
 @blueprint.route("/list", methods=["GET"])
-def apiListPost():
+def ListPost():
     data = request_parse(request)
     p = int(getConfigByKey('itemLimit'))
     page = p * \
         data.get('page', default=0, type=int)
-    log.info(f"[客户端:{request.remote_addr}] 请求 -> 获取帖子列表")
     obj = []
-    log.info(
-        f"[客户端:{request.remote_addr}] 请求 -> 查看帖子列表 | 页:{page}")
     if (lock.acquire()):
         for dname, duid, dcoin, dtime, dlast, davartar in c.execute(f"SELECT name,uid,coin,time,last,avartar FROM user LIMIT {p} OFFSET {page}"):
             obj1 = {}

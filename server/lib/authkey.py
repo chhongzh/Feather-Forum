@@ -17,7 +17,6 @@ def validate_authkey(authkey: str):
     if (len(authkey) > 36 or len(authkey) < 36 or '-' not in authkey or '"' in authkey or "'" in authkey):
         return None
     ak = int(getConfigByKey('authKeyTime'))
-    log.info(ak)
     if (lock.acquire()):
 
         for dname, _, dlast, dtime, duid, duuid, davartar, dcoin, demail, _ in c.execute(f"""
