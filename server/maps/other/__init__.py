@@ -3,14 +3,8 @@ from flask import Blueprint, request
 from lib.request import buildRequest
 from lib.request import request_parse
 from lib.code import code
-from time import time
-from lib.database import getConfigByKey
 from lib import share
 from lib.authkey import validate_authkey
-from math import ceil
-from time import time
-from hashlib import sha256
-from uuid import uuid4
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
