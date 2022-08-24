@@ -1,6 +1,9 @@
+# ---------------------------------------------------------------------------
 from time import time
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 class Cache(object):
 
     def __init__(self):
@@ -10,7 +13,7 @@ class Cache(object):
     def setItem(self, itemName: str, item: object, expired: float = 0):
         self.checkExpired()
         self.data[itemName] = item
-        if(expired > 0):
+        if (expired > 0):
             self.expired[itemName] == expired
 
     def removeItem(self, itemName):
@@ -22,14 +25,14 @@ class Cache(object):
 
     def getItem(self, itemName):
         self.checkExpired()
-        if(self.searchItem(itemName)):
+        if (self.searchItem(itemName)):
             return self.data[itemName]
         else:
             return None
 
     def searchItem(self, itemName):
         self.checkExpired()
-        if(itemName in self.data.copy().keys()):
+        if (itemName in self.data.copy().keys()):
             return True
         else:
             return False
@@ -40,6 +43,7 @@ class Cache(object):
     def checkExpired(self):
 
         for key in self.expired.copy().keys():
-            if(time() > self.expired[key] and self.expired[key] is not None):
+            if (time() > self.expired[key] and self.expired[key] is not None):
                 self.expired.pop(key)
                 self.data.pop(key)
+# ---------------------------------------------------------------------------

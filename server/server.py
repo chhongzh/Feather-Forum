@@ -7,6 +7,7 @@ from sys import version
 from lib import share
 from lib.config import Config
 from flask import Flask
+from rich.traceback import install
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -18,6 +19,7 @@ log = share.log
 app.register_blueprint(post.blueprint)
 app.register_blueprint(user.blueprint)
 app.register_blueprint(other.blueprint)
+install()  # 安装Traceback组件
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------

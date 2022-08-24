@@ -1,3 +1,4 @@
+# ---------------------------------------------------------------------------
 class code():
     REQUEST_BAD_QUERY = 1020
     REQUEST_USER_REG_ERROR = 1010
@@ -5,3 +6,4 @@ class code():
     REQUEST_USER_LOG_ERROR = 1011
     REQUEST_BAD_AUTHKEY = 1030
     SERVER_ERROR = 500
+# ---------------------------------------------------------------------------

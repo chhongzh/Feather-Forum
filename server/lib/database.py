@@ -1,9 +1,12 @@
+# ---------------------------------------------------------------------------
 from . import share
 cache = share.cache
 lock = share.lock
 c = share.c
+# ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
 def getConfigByKey(key: str) -> str:
     if (cache.searchItem(key)):
         return cache.getItem(key)
@@ -16,3 +19,4 @@ def getConfigByKey(key: str) -> str:
             cache.setItem(key, i[0])
             return i[0]
         lock.release()
+# ---------------------------------------------------------------------------
