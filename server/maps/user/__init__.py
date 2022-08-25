@@ -32,7 +32,7 @@ def Register():
     if (data.get('name', None) is None or
             data.get('pw', None) is None or
             data.get('email', None) is None
-        ):
+            ):
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
     for _ in c.execute(f"SELECT name FROM user WHERE name='{data.get('name')}'"):
         return buildRequest(code.REQUEST_USER_REG_ERROR, "用户名已存在")
@@ -57,7 +57,7 @@ def Login():
     data = request_parse(request)
     if (data.get('name', None) is None or
             data.get('pw', None) is None
-        ):
+            ):
         return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码为空")
     if (lock.acquire()):
         for dname, dpw, duid, demail, dcoin, dtime, dlast, dauthkey, duuid, davrtar in c.execute(f"""SELECT * FROM user WHERE name='{data.get('name')}'"""):
@@ -206,4 +206,18 @@ def PageUser():
     total = ceil(total/page)
 
     return buildRequest(code.REQUEST_OK, msg="查询成功", page=total-1)
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+
+
+@blueprint.route("/follow", methods=["POST"])
+def FollowUser():
+    data = request_parse(request)
+    authkey = data.get('authkey', None)
+    tofollow = data.get('to', None)
+    if (authkey is None or tofollow is None):
+        return buildRequest(code.REQUEST_BAD_QUERY, "参数不全")
+    if(validate_authkey(authkey)):
+        pass
 # ---------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 # ---------------------------------------------------------------------------
 from lib.database import getConfigByKey
-from . import share
+from lib import share
+from lib.utils import isSpecil
 from time import time
 # ---------------------------------------------------------------------------
 
@@ -12,9 +13,20 @@ c = share.c
 
 
 # ---------------------------------------------------------------------------
-def validate_authkey(authkey: str):
+def validate_authkey(authkey: str) -> None | dict:
+    """参数:
+        authkey:用于验证的authkey
+    返回:
+        如果authkey有效:
+            返回信息
+        如果无效:
+            返回None"""
     obj = {}
-    if (len(authkey) > 36 or len(authkey) < 36 or '-' not in authkey or '"' in authkey or "'" in authkey):
+    if (len(authkey) > 36 or
+            len(authkey) < 36 or
+            '-' not in authkey or
+            not isSpecil(authkey)
+        ):
         return None
     ak = int(getConfigByKey('authKeyTime'))
     if (lock.acquire()):

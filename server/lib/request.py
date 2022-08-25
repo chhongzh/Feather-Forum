@@ -5,7 +5,7 @@ from json import dumps
 
 
 # ---------------------------------------------------------------------------
-def buildRequest(code: int, msg: str = "", **kwargs):
+def buildRequest(code: int, msg: str = "", **kwargs) -> str:
     obj = {}
     obj.update({"code": code})
     obj.update({"time": format(time(), '.3f')})
