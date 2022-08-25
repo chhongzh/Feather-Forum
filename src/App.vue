@@ -56,27 +56,25 @@
       <b>{{ userAgent }}</b>
       <el-row>
         <el-col :span="8">
-          <!-- <p v-if="!hideFeather"><b>"{{ forumName }}"</b> 由 "<b>Feather Forum</b>" 提供支持</p> -->
           <p v-if="!hideFeather">"<b>{{ forumName }}</b>" 由 "<b>
               <el-link :underline="false" href="https://github.com/chhongzh/Feather-Forum">Feather Forum
               </el-link>
             </b>" 提供支持</p>
-          <p>Client响应:<b>{{ clientTime }}</b></p>
+
 
         </el-col>
         <el-col :span="8">
           <p>
-            © Copyright {{ year }} {{ weblink }} All Rights Reserved
+            © Copyright <b>{{ year }}</b> <b>{{ weblink }}</b> All Rights Reserved
           </p>
-          <p>
-            © {{ year }} {{ weblink }} 版权所有
-          </p>
+
 
         </el-col>
         <el-col :span="8">
-          <p><b>版权所有 侵权必究!</b></p>
-          <p v-if="$store.state.login">Server响应:<b>{{ serverTime }}</b></p>
-          <p v-if="$store.state.login">响应时间:<b>{{ reduceTime }}</b></p>
+
+          <p>
+            © <b>{{ year }}</b> <b>{{ weblink }}</b> 版权所有
+          </p>
         </el-col>
 
       </el-row>
