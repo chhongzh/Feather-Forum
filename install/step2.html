@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}2{% endblock %}
+
+{% block main%}
+<div>
+    <div id="main">
+        <div id="hide">
+            <p>填写基本信息</p>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="name" placeholder="论坛名称">
+                <label for="name">论坛名称</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="api" placeholder="论坛API请求地址">
+                <label for="api">论坛API请求地址</label>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="f" checked>
+                <label class="form-check-label" for="f">在底部显示Feather Forum字样</label>
+            </div>
+            <div style="margin-top: 25px;"></div>
+            <a href="/" class="btn btn-outline-secondary">上一步</a>
+
+            <button class="btn btn-outline-primary" id="submit">下一步</button>
+            <div style="margin-top: 25px;"></div>
+        </div>
+        <div id="span"></div>
+        <div style="margin:0px;max-height: 300px;overflow-y: auto;" id="console">
+        </div>
+    </div>
+    <div id="thank" style="text-align: center;display:none">
+        <h1>安装已经完成</h1>
+        <h4>感谢您的使用</h4>
+        <button class="btn btn-outline-danger" onclick="stop()">结束安装进程</button>
+    </div>
+    <p style="display:none" id="close">您现在可以安全的退出此安装向导了!</p>
+
+
+    <script>
+        const clog = (msg) => {
+            $('#console').prepend(`<pre>[CLIENT] ${msg}</pre><br>`)
+        }
+        const slog = (msg) => {
+            $('#console').prepend(`<pre>[SERVER] ${msg}</pre><br>`)
+        }
+
+        const stop = () => {
+            ws.emit('server stop')
+            $('#thank').hide(750)
+            $('#close').show(750)
+        }
+
+        $(document).ready(() => {
+            ws = io()
+            ws.on('connect', (msg) => {
+                clog('Ws 服务器已建立连接!')
+            })
+            ws.on('install done', (msg) => {
+                clog('安装完成')
+                $('#main').hide(750)
+                $('#thank').show(750)
+            })
+            ws.on('server log', (msg) => {
+                slog(msg)
+            })
+        })
+        $('#submit').click(() => {
+            if ($('#name').val() == "") {
+                alert('论坛名称不能为空')
+                return
+            }
+            if ($('#api').val() == "") {
+                alert('论坛API请求地址不能为空')
+                return
+            }
+            $('#hide').hide(750)
+            $('#span').prepend('<div class="spinner-border" role="status"></div><span class="sr-only">&nbsp&nbsp&nbsp内容已处理,请稍等...</span>')
+            ws.emit('install run', { data: { name: $('#name').val(), api: $('#api').val() } })
+        })
+    </script>
+</div>
+{% endblock %}

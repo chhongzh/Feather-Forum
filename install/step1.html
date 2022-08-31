@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}1{% endblock %}
+
+{% block main %}
+<div>
+    <p>本向导将会引导您安装Feather Forum</p>
+    <br>
+    <p>安装前检查:</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">项目</th>
+                <th scope="col">Feather Forum所需配置</th>
+                <th scope="col">当前配置</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-success">
+                <td>操作系统</td>
+                <td>不限制</td>
+                <td><img src="{{url_for('static', filename='check_right.gif')}}">{{UseSystem}}</td>
+            </tr>
+            {% if PyVer>=(3,9,6) %}
+            <tr class="table-success">
+                {% else %}
+            <tr class="table-danger">
+
+                {% endif %}
+                <td>Python版本</td>
+                <td>3.9.6</td>
+                <td>
+                    {% if PyVer>=(3,9,6) %}
+                    <img src="{{url_for('static', filename='check_right.gif')}}">
+                    {% else %}
+                    <img src="{{url_for('static', filename='check_error.gif')}}">
+                    {% endif %}
+                    {{UsePython}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>目录,文件读写情况:</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">目录文件</th>
+                <th scope="col">所需状态</th>
+                <th scope="col">当前状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            {% if item.current %}
+            <tr class="table-success">
+                {% else %}
+            <tr class="table-danger">
+                {% endif %}
+                <td>{{item.name}}</td>
+                {% if item.need %}
+                <td><img src="{{url_for('static', filename='check_right.gif')}}">可读可写</td>
+                {% else %}
+                <td><img src="{{url_for('static', filename='check_error.gif')}}">不可读或不可写</td>
+                {% endif %}
+
+                {% if item.current %}
+                <td><img src="{{url_for('static', filename='check_right.gif')}}">可读可写</td>
+                {% else %}
+                <td><img src="{{url_for('static', filename='check_error.gif')}}">不可读或不可写</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if not HasError and not PyErr %}
+    <a class="btn btn-outline-primary" href="/step2">下一步</a>
+    {% else %}
+    <p>出现错误请检查后安装!</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

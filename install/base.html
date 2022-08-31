@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}{% endblock %} - Feather Forum</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
+    <style>
+        pre {
+
+            display: inline;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="margin-top:25px"></div>
+        <div>
+            <p style="text-align:center" class="display-2">Feather Forum安装向导</p>
+        </div>
+        <div style="margin-top:25px"></div>
+        <div class="lead">
+            <!-- <div> -->
+            <!-- 路由填充 -->
+            {% block main %}
+            {% endblock %}
+        </div>
+        <div style="margin-top:25px"></div>
+        <div style="text-align:center">
+            <p>Feather Forum - 2022 (Built Version:1.23.1)</p>
+        </div>
+    </div>
+</body>
+
+</html>
