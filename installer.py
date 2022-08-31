@@ -194,6 +194,13 @@ def installrun(data):
     conn.commit()
     conn.close()
     io.emit('server log', '执行:数据库清理完成')
+    io.emit('server log', '执行:npm install')
+    os.system('npm install')
+    io.emit('server log', '执行:npm install完成')
+    io.emit('server log', '执行:npm build')
+    os.system('npm run build')
+    io.emit('server log', '执行:npm build完成')
+
     io.emit('install done', '完成安装!')
 
 

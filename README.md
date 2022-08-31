@@ -41,15 +41,10 @@ git clone https://github.com/chhongzh/Feather-Forum.git
 
 cd Feather-Forum
 
-# 安装依赖
-npm install
-
-# 编译项目
-npm run build
+python3 installer.py
 ```
 
-等待编译完成后,复制dist文件夹下所有文件到您的Ngnix或Apache的网页根目录下
-**TIPS**:如果您想要预览而不是编译,请使用`npm run serve`
+根据提示打开在线安装网页,根据提示填写并完善信息即可
 
 
 ### 启动后端

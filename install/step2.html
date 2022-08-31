@@ -26,7 +26,7 @@
             <div style="margin-top: 25px;"></div>
         </div>
         <div id="span"></div>
-        <div style="margin:0px;max-height: 300px;overflow-y: auto;" id="console">
+        <div style="margin:0px;max-height: 300px;overflow-y: auto;display: none;" id="console">
         </div>
     </div>
     <div id="thank" style="text-align: center;display:none">
@@ -75,6 +75,7 @@
                 return
             }
             $('#hide').hide(750)
+            $('#console').show(750)
             $('#span').prepend('<div class="spinner-border" role="status"></div><span class="sr-only">&nbsp&nbsp&nbsp内容已处理,请稍等...</span>')
             ws.emit('install run', { data: { name: $('#name').val(), api: $('#api').val() } })
         })
