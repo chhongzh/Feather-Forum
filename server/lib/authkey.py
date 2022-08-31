@@ -25,7 +25,7 @@ def validate_authkey(authkey: str) -> None | dict:
     if (len(authkey) > 36 or
             len(authkey) < 36 or
             '-' not in authkey or
-            not isSpecil(authkey)
+            isSpecil(authkey)
         ):
         return None
     ak = int(getConfigByKey('authKeyTime'))
