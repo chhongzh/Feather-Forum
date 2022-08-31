@@ -2,7 +2,7 @@
 from flask import Blueprint, request
 from lib.request import buildRequest
 from lib.request import request_parse
-from lib.code import code
+from lib.code import Code
 from time import time
 from lib.database import getConfigByKey
 from lib import share
@@ -33,9 +33,9 @@ def Register():
             data.get('pw', None) is None or
             data.get('email', None) is None
             ):
-        return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
+        return buildRequest(Code.REQUEST_BAD_QUERY, "用户名或密码或email为空")
     for _ in c.execute(f"SELECT name FROM user WHERE name='{data.get('name')}'"):
-        return buildRequest(code.REQUEST_USER_REG_ERROR, "用户名已存在")
+        return buildRequest(Code.REQUEST_USER_REG_ERROR, "用户名已存在")
     name = data.get('name').replace("'", "''").replace('"', '""')
     pw = data.get('pw').replace("'", "''").replace('"', '""')
     email = data.get('email').replace("'", "''").replace('"', '""')
@@ -47,18 +47,18 @@ def Register():
             """)
         conn.commit()
         lock.release()
-        return buildRequest(code.REQUEST_OK, "注册成功")
+        return buildRequest(Code.REQUEST_OK, "注册成功")
 # ---------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------
-@blueprint.route("/login", methods=["POST", "GET"])
+@blueprint.route("/login", methods=["POST"])
 def Login():
     data = request_parse(request)
     if (data.get('name', None) is None or
             data.get('pw', None) is None
             ):
-        return buildRequest(code.REQUEST_BAD_QUERY, "用户名或密码为空")
+        return buildRequest(Code.REQUEST_BAD_QUERY, "用户名或密码为空")
     if (lock.acquire()):
         for dname, dpw, duid, demail, dcoin, dtime, dlast, dauthkey, duuid, davrtar in c.execute(f"""SELECT * FROM user WHERE name='{data.get('name')}'"""):
             if (dpw == sha256(bytes(data.get('pw'), encoding='utf8')).hexdigest()):
@@ -68,11 +68,12 @@ def Login():
                 """)
                 conn.commit()
                 lock.release()
-                return buildRequest(code.REQUEST_OK, "登录成功", authkey=authkey)
+                return buildRequest(Code.REQUEST_OK, "登录成功", authkey=authkey)
             else:
                 lock.release()
-                return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
-        return buildRequest(code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
+                return buildRequest(Code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
+        lock.release()
+        return buildRequest(Code.REQUEST_USER_LOG_ERROR, "登录失败,用户名或密码错误!")
 # ---------------------------------------------------------------------------
 
 
@@ -82,11 +83,11 @@ def Info():
     data = request_parse(request)
     authkey = data.get('authkey')
     if (authkey is None or '"' in authkey or "'" in authkey or len(authkey) > 36 or len(authkey) < 36 or '-' not in authkey):
-        return buildRequest(code.REQUEST_BAD_QUERY, "无效的AuthKey")
+        return buildRequest(Code.REQUEST_BAD_QUERY, "无效的AuthKey")
     ak = validate_authkey(authkey)
     if (ak):
 
-        return buildRequest(code.REQUEST_OK, "有效的AuthKey",
+        return buildRequest(Code.REQUEST_OK, "有效的AuthKey",
                             name=ak["name"],
                             uid=ak["uid"],
                             email=ak["email"],
@@ -98,7 +99,7 @@ def Info():
                             authkey=True
                             )
     else:
-        return buildRequest(code.REQUEST_BAD_AUTHKEY, "不存在或过期的AuthKey", authkey=False)
+        return buildRequest(Code.REQUEST_BAD_AUTHKEY, "不存在或过期的AuthKey", authkey=False)
 # ---------------------------------------------------------------------------
 
 
@@ -106,15 +107,15 @@ def Info():
 @blueprint.route('/info/<uid>')
 def UserPublicInfo(uid: str):
     if (not uid.isdigit()):
-        return buildRequest(code.REQUEST_BAD_QUERY, 'uid必须为数字')
+        return buildRequest(Code.REQUEST_BAD_QUERY, 'uid必须为数字')
     uid = int(uid)
     if (uid == 0 or uid < 0):
-        return buildRequest(code.REQUEST_BAD_QUERY, 'uid不合法')
+        return buildRequest(Code.REQUEST_BAD_QUERY, 'uid不合法')
 
     if (lock.acquire()):
         for dname, _, dlast, dtime, duid, duuid, davartar, dcoin, demail, _ in c.execute(f"""SELECT * FROM user WHERE uid='{uid}'"""):
             lock.release()
-            return buildRequest(code.REQUEST_OK, "查询成功",
+            return buildRequest(Code.REQUEST_OK, "查询成功",
                                 name=dname,
                                 uid=duid,
                                 email=demail,
@@ -126,7 +127,7 @@ def UserPublicInfo(uid: str):
                                 )
 
         lock.release()
-        return buildRequest(code.REQUEST_BAD_QUERY, 'uid未找到')
+        return buildRequest(Code.REQUEST_BAD_QUERY, 'uid未找到')
 # ---------------------------------------------------------------------------
 
 
@@ -154,7 +155,7 @@ def ListUser():
     last = False
     if (len(obj) < p):
         last = True
-    return buildRequest(code.REQUEST_OK, "查询成功", list=obj, last=last)
+    return buildRequest(Code.REQUEST_OK, "查询成功", list=obj, last=last)
 # ---------------------------------------------------------------------------
 
 
@@ -177,7 +178,7 @@ def TopUser():
             })
             obj.append(obj1)
     lock.release()
-    return buildRequest(code.REQUEST_OK, "查询成功", list=obj)
+    return buildRequest(Code.REQUEST_OK, "查询成功", list=obj)
 # ---------------------------------------------------------------------------
 
 
@@ -188,7 +189,7 @@ def CountUser():
         for i in c.execute("SELECT count(*) FROM user"):
             lock.release()
 
-            return buildRequest(code.REQUEST_OK, "查询成功", count=i[0])
+            return buildRequest(Code.REQUEST_OK, "查询成功", count=i[0])
 # ---------------------------------------------------------------------------
 
 
@@ -205,7 +206,7 @@ def PageUser():
     page = int(getConfigByKey('itemLimit'))
     total = ceil(total/page)
 
-    return buildRequest(code.REQUEST_OK, msg="查询成功", page=total-1)
+    return buildRequest(Code.REQUEST_OK, msg="查询成功", page=total-1)
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -216,8 +217,24 @@ def FollowUser():
     data = request_parse(request)
     authkey = data.get('authkey', None)
     tofollow = data.get('to', None)
-    if (authkey is None or tofollow is None):
-        return buildRequest(code.REQUEST_BAD_QUERY, "参数不全")
-    if(validate_authkey(authkey)):
-        pass
+    if (authkey is None or tofollow is None or tofollow <= 0):
+        return buildRequest(Code.REQUEST_BAD_QUERY, "参数错误")
+    ak = validate_authkey(authkey)
+    if (ak is None):
+        return buildRequest(Code.REQUEST_BAD_AUTHKEY, '无法验证authkey')
+    if (lock.acquire()):
+        for _ in c.execute('''SELECT * FROM follow WHERE "from"={} and "to"={}
+        '''.format(ak['uid'], tofollow)):
+            lock.release()
+            return buildRequest(Code.REQUEST_ERROR, "你已经关注了!")
+        c.execute("""INSERT INTO follow ('from','to','time') VALUES ({},{},{})""".format(
+            ak['uid'],
+            tofollow,
+            int(time())
+        ))
+        conn.commit()
+        lock.release()
+        return buildRequest(Code.REQUEST_OK, "关注成功!")
+
+
 # ---------------------------------------------------------------------------

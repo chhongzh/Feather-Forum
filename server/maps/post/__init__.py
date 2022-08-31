@@ -2,7 +2,7 @@
 from flask import Blueprint, request
 from lib.request import buildRequest
 from lib.request import request_parse
-from lib.code import code
+from lib.code import Code
 from time import time
 from lib.database import getConfigByKey
 from lib import share
@@ -29,7 +29,7 @@ def WritePost():
     title = data.get('title')
     content = str(data.get('content'))
     if (data is None or title is None or content is None):
-        return buildRequest(code.REQUEST_BAD_QUERY, "缺省参数")
+        return buildRequest(Code.REQUEST_BAD_QUERY, "缺省参数")
     ak = validate_authkey(authkey)
     if (ak):
         uid = ak["uid"]
@@ -43,9 +43,9 @@ def WritePost():
             """)
             conn.commit()
             lock.release()
-            return buildRequest(code.REQUEST_OK, "帖子已经推送,等待审核")
+            return buildRequest(Code.REQUEST_OK, "帖子已经推送,等待审核")
     else:
-        return buildRequest(code.REQUEST_BAD_AUTHKEY, "无法验证authkey")
+        return buildRequest(Code.REQUEST_BAD_AUTHKEY, "无法验证authkey")
 # ---------------------------------------------------------------------------
 
 
@@ -54,9 +54,9 @@ def WritePost():
 def PostRead():
     data = request_parse(request)
     if (data.get('authkey') is None or data.get('pid') is None):
-        return buildRequest(code.REQUEST_BAD_QUERY, "参数缺少")
+        return buildRequest(Code.REQUEST_BAD_QUERY, "参数缺少")
     if (not str(data.get('pid')).isdigit()):
-        return buildRequest(code.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
+        return buildRequest(Code.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
     pid = data.get('pid')
     if (lock.acquire()):
         for dtitle, dcontent, duid, dtime, dpid in c.execute(f"""
@@ -64,11 +64,11 @@ def PostRead():
         """):
             for dname in c.execute(f"SELECT name,uid FROM user WHERE uid = {int(duid)}"):
                 lock.release()
-                return buildRequest(code.REQUEST_OK, "查询成功", title=dtitle, content=dcontent, time=dtime, name=dname[0])
+                return buildRequest(Code.REQUEST_OK, "查询成功", title=dtitle, content=dcontent, time=dtime, name=dname[0])
             lock.release()
-            return buildRequest(code.REQUEST_BAD_QUERY, "帖子不存在")
+            return buildRequest(Code.REQUEST_BAD_QUERY, "帖子不存在")
         lock.release()
-        return buildRequest(code.REQUEST_BAD_QUERY, "帖子不存在")
+        return buildRequest(Code.REQUEST_BAD_QUERY, "帖子不存在")
 # ---------------------------------------------------------------------------
 
 
@@ -88,7 +88,7 @@ def PostTop():
             })
             obj.append(obj1)
         lock.release()
-        return buildRequest(code.REQUEST_OK, "查询成功", list=obj)
+        return buildRequest(Code.REQUEST_OK, "查询成功", list=obj)
 # ---------------------------------------------------------------------------
 
 
@@ -116,5 +116,5 @@ def ListPost():
     last = False
     if (len(obj) < p):
         last = True
-    return buildRequest(code.REQUEST_OK, "查询成功", list=obj, last=last)
+    return buildRequest(Code.REQUEST_OK, "查询成功", list=obj, last=last)
 # ---------------------------------------------------------------------------
