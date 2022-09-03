@@ -57,5 +57,7 @@ python3 installer.py
 
 根据MIT许可证发布,有关更多信息,请参见`LICENSE`。
 
+[赞助作者](https://afdian.net/a/1A2553E)
+
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 
