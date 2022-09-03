@@ -7,7 +7,9 @@
         <div v-for="(mem, index) in mems" :key="index">
             <el-card>
                 <template #header>
-                    {{ mem.name }}
+                    <router-link :to="`/user/${mem.uid}`">
+                        <el-link>{{ mem.name }}</el-link>
+                    </router-link>
                 </template>
 
                 <el-descriptions>
