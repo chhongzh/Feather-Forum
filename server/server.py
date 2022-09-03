@@ -7,7 +7,9 @@ from sys import version
 from lib import share
 from lib.config import Config
 from flask import Flask
-from rich.traceback import install
+from rich import print
+
+from lib.database import query
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -20,7 +22,6 @@ app.config['SECRET_KEY'] = Config.SecretKey
 app.register_blueprint(post.blueprint)
 app.register_blueprint(user.blueprint)
 app.register_blueprint(other.blueprint)
-install()  # 安装Traceback组件
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------

@@ -32,10 +32,7 @@ class Cache(object):
 
     def searchItem(self, itemName: str) -> bool:
         self.checkExpired()
-        if (itemName in self.data.copy().keys()):
-            return True
-        else:
-            return False
+        return itemName in self.data.copy().keys()
 
     def clear(self) -> None:
         self.data.clear()
