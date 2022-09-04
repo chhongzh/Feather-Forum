@@ -1,12 +1,35 @@
 from json import dump, load
+import os
+import tarfile
 import time
 from InquirerPy import inquirer
 import git
+import copy
+import zipfile
 
 print('自动版本构建工具')
 with open('./package.json', 'r') as f:
     data = load(f)
 print('当前版本:{}'.format(data['version']))
+old = copy.deepcopy(data['version'])
+
+
+def makezip(name, path, type: zipfile.ZIP_STORED | zipfile.ZIP_DEFLATED = zipfile.ZIP_STORED, dis=["node_modules", ".git", "build"]):
+    with zipfile.ZipFile(name+'.zip', 'w') as z:
+        for root, dirs, files in os.walk(path):
+            dirs[:] = [d for d in dirs if d not in dis]
+            for file in files:
+                if (file == 'BuildBot.py'):
+                    continue
+                fullpath = os.path.join(root, file)
+                z.write(fullpath, compress_type=type)
+
+
+def mkdir(path):
+    try:
+        os.mkdir(path)
+    except:
+        pass
 
 
 def version(string: str):
@@ -31,7 +54,7 @@ data['version'] = name
 a = inquirer.confirm(message=f'确定发布版本({name})', default=True).execute()
 if (a):
     print('--------------------------------生成commit:--------------------------------')
-    commit = f"""版本:v{name}
+    commit = f"""版本:v{name}\n
 此版本由'版本构建机器人'构建于:{time.asctime( time.localtime(time.time()) )}"""
     print(commit)
     print('---------------------------------------------------------------------------')
@@ -42,4 +65,13 @@ if (a):
     repo.index.add(['package.json'])
     repo.index.commit(commit)
     repo.remote().push()
-    print('Done')
+    print('推送至远程服务器成功!')
+    print('打包文件')
+    mkdir('build')
+    os.chdir('build')
+    try:
+        os.rename('latest.zip', "{}.zip".format(old))
+    except:
+        pass
+    makezip('latest', '../')
+    print('Done!')
