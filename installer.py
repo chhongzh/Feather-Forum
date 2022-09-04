@@ -1,4 +1,4 @@
-from json import dumps
+from json import dumps, load
 import random
 import socket
 from sqlite3 import connect
@@ -16,6 +16,8 @@ import os
 import platform
 import sys
 
+with open('package.json') as f:
+    data = load(f)
 
 print('启动Web服务器')
 app = Flask(__name__, template_folder='install', static_folder='install')
@@ -87,12 +89,13 @@ def index():
                            Key=key,
                            PyVer=(sys.version_info.major,
                                   sys.version_info.minor, sys.version_info.micro),
-                           PyErr=vererror)
+                           PyErr=vererror,
+                           BuildVer=data['version'])
 
 
 @app.route('/step2', methods=['GET'])
 def step2():
-    return render_template('step2.html')
+    return render_template('step2.html', BuildVer=data['version'])
 
 
 @io.on('connect')
