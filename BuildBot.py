@@ -53,8 +53,8 @@ name = inquirer.text(message="版本号(格式:n.n.n):", validate=version,
 data['version'] = name
 a = inquirer.confirm(message=f'确定发布版本({name})', default=True).execute()
 if (a):
-    # with open('./package.json', 'w') as f:
-    #     dump(data, f, ensure_ascii=False)
+    with open('./package.json', 'w') as f:
+        dump(data, f, ensure_ascii=False)
     print('--------------------------------生成commit:--------------------------------')
     commit = f"""版本:v{name}
 此版本由'版本构建机器人'构建于:{time.asctime( time.localtime(time.time()) )}"""
@@ -77,11 +77,12 @@ if (a):
     try:
         repo.index.add(
             ['package.json', f'build/{old}.zip', 'build/latest.zip'])
-        print('0')
+        # print('0')
     except:
         repo.index.add(['package.json', 'build/latest.zip'])
-        print('1')
-    # repo.index.commit(commit)
-    # repo.remote().push()
-    # print('推送至远程服务器成功!')
+        # print('1')
+    repo.index.commit(commit)
+    repo.create_tag('v'+name+'_BOT')
+    repo.remote().push()
+    print('推送至远程服务器成功!')
     print('Done!')
