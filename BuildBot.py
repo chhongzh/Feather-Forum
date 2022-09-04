@@ -1,6 +1,5 @@
 from json import dump, load
 import os
-import tarfile
 import time
 from InquirerPy import inquirer
 import git
@@ -21,6 +20,7 @@ def makezip(name, path, type: zipfile.ZIP_STORED | zipfile.ZIP_DEFLATED = zipfil
             for file in files:
                 if (file == 'BuildBot.py'):
                     continue
+                print(f'打包文件:{file}')
                 fullpath = os.path.join(root, file)
                 z.write(fullpath, compress_type=type)
 
@@ -53,11 +53,12 @@ name = inquirer.text(message="版本号(格式:n.n.n):", validate=version,
 data['version'] = name
 a = inquirer.confirm(message=f'确定发布版本({name})', default=True).execute()
 if (a):
-    with open('./package.json', 'w') as f:
-        dump(data, f, ensure_ascii=False)
+    # with open('./package.json', 'w') as f:
+    #     dump(data, f, ensure_ascii=False)
     print('--------------------------------生成commit:--------------------------------')
     commit = f"""版本:v{name}
 此版本由'版本构建机器人'构建于:{time.asctime( time.localtime(time.time()) )}"""
+    print(commit)
     print('---------------------------------------------------------------------------')
 
     print('打包文件')
@@ -71,15 +72,16 @@ if (a):
     makezip('latest', '../')
     os.chdir('../')
 
-    print(commit)
     print('执行提交Commit...')
     repo = git.Repo.init('.')
     try:
         repo.index.add(
             ['package.json', f'build/{old}.zip', 'build/latest.zip'])
+        print('0')
     except:
         repo.index.add(['package.json', 'build/latest.zip'])
-    repo.index.commit(commit)
-    repo.remote().push()
-    print('推送至远程服务器成功!')
+        print('1')
+    # repo.index.commit(commit)
+    # repo.remote().push()
+    # print('推送至远程服务器成功!')
     print('Done!')
