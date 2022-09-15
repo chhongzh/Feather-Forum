@@ -1,6 +1,4 @@
 # ---------------------------------------------------------------------------
-from queue import Queue
-from sqlite3 import Cursor, connect
 from . import share
 cache = share.cache
 lock = share.lock
@@ -24,7 +22,7 @@ def getConfigByKey(key: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-def _query(query: str, args: tuple, one=False):
+def _query(query: str, args: tuple | list = (), one=False):
     cur = c.execute(query, args)
     rv = [dict((cur.description[idx][0], value)
                for idx, value in enumerate(row)) for row in cur.fetchall()]
@@ -33,7 +31,7 @@ def _query(query: str, args: tuple, one=False):
 
 
 # ---------------------------------------------------------------------------
-def query(query: str, args: tuple, one=False):
+def query(query: str, args: tuple | list = (), one=False):
     if (lock.acquire()):
         q = _query(query, args, one)
         lock.release()
