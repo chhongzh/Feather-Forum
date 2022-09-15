@@ -3,16 +3,11 @@
   "version": "1.23.7",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "client": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "server": "cd server && python3 server.py && cd ../"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.0.9",
-    "@fortawesome/fontawesome-svg-core": "^6.2.0",
-    "@fortawesome/free-brands-svg-icons": "^6.2.0",
-    "@fortawesome/free-regular-svg-icons": "^6.2.0",
-    "@fortawesome/free-solid-svg-icons": "^6.2.0",
-    "@fortawesome/vue-fontawesome": "^3.0.1",
     "@kangc/v-md-editor": "^2.3.15",
     "axios": "^0.27.2",
     "core-js": "^3.25.0",
