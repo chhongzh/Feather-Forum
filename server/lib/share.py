@@ -4,11 +4,14 @@ from lib.cache import Cache
 from sqlite3 import connect
 from rich.logging import RichHandler
 from logging import basicConfig, getLogger
+from rich.console import Console
+from logging import FileHandler, Formatter, DEBUG, INFO, WARN, ERROR, CRITICAL
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
 lock = Lock()
 cache = Cache()
+console = Console()
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -19,7 +22,7 @@ c = conn.cursor()
 # ---------------------------------------------------------------------------
 FORMAT = "%(message)s"
 basicConfig(
-    level="DEBUG", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+    level="DEBUG", format=FORMAT, datefmt="[%X]", handlers=[RichHandler(console=console, rich_tracebacks=True)]
 )
 log = getLogger("rich")
 # ---------------------------------------------------------------------------
