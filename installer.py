@@ -1,5 +1,7 @@
+import sys
+import platform
+import os
 from json import dumps, load
-import random
 import socket
 from sqlite3 import connect
 from pip import main
@@ -12,9 +14,6 @@ except ImportError:
     print('完成')
     print('请重启脚本!')
     exit(0)
-import os
-import platform
-import sys
 
 with open('package.json') as f:
     data = load(f)
@@ -36,16 +35,6 @@ def extract_ip():
     return IP
 
 
-def randstr(num):
-    H = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
-    salt = ''
-    for _ in range(num):
-        salt += random.choice(H)
-
-    return salt
-
-
 def request_parse(req_data):
     if (req_data.method == 'POST'):
         data = req_data.json
@@ -53,8 +42,6 @@ def request_parse(req_data):
         data = req_data.args
     return data
 
-
-key = randstr(16)
 
 print('请访问:http://{}:5000'.format(extract_ip()))
 
@@ -86,7 +73,6 @@ def index():
                                sys.version_info.major, sys.version_info.minor, sys.version_info.micro),
                            items=obj,
                            HasError=error,
-                           Key=key,
                            PyVer=(sys.version_info.major,
                                   sys.version_info.minor, sys.version_info.micro),
                            PyErr=vererror,
@@ -197,12 +183,12 @@ def installrun(data):
     conn.commit()
     conn.close()
     io.emit('server log', '执行:数据库清理完成')
-    io.emit('server log', '执行:npm install')
-    os.system('npm install')
-    io.emit('server log', '执行:npm install完成')
-    io.emit('server log', '执行:npm build')
-    os.system('npm run build')
-    io.emit('server log', '执行:npm build完成')
+    io.emit('server log', '执行:yarn install')
+    os.system('yarn install')
+    io.emit('server log', '执行:yarn install完成')
+    io.emit('server log', '执行:yarn build')
+    os.system('yarn run build')
+    io.emit('server log', '执行:yarn build完成')
 
     io.emit('install done', '完成安装!')
 
