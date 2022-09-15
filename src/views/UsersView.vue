@@ -1,5 +1,5 @@
 <template>
-    <el-card>
+    <el-card v-loading="isLoading">
         <template #header><b>用户列表</b></template>
         <el-empty v-show="mems.length <= 0" description="没有数据">
 
@@ -47,7 +47,8 @@ export default {
             totalPage: 1,
             page: 1,
             cache: 0,
-            mems: []
+            mems: [],
+            isLoading: true
         }
     },
     mounted() {
@@ -58,8 +59,9 @@ export default {
     },
     methods: {
         onChange() {
+            this.isLoading = true
             this.$http(`/api/user/list?page=${this.page - 1}`).then((res) => {
-                this.mems = res.data.data.list
+                // this.mems = res.data.data.list
                 this.mems = []
                 for (var i = 0; i < res.data.data.list.length; i++) {
                     res.data.data.list[i].time = transformTime(res.data.data.list[i].time * 1000)
@@ -69,6 +71,7 @@ export default {
                 .catch((res) => {
                     this.$message.error(res);
                 })
+            this.isLoading = false
         }
     }
 
@@ -76,4 +79,5 @@ export default {
 </script>
 
 <style>
+
 </style>
