@@ -7,9 +7,6 @@ from sys import version
 from lib import share
 from lib.config import Config
 from flask import Flask
-from rich import print
-
-from lib.database import query
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------

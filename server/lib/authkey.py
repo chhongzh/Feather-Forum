@@ -24,26 +24,14 @@ def validate_authkey(authkey: str) -> None | dict:
             返回None"""
     obj = {}
     if (len(authkey) > 36 or
-                len(authkey) < 36 or
-                '-' not in authkey or
-                isSpecil(authkey)
+            len(authkey) < 36 or
+            '-' not in authkey or
+            isSpecil(authkey)
             ):
         return None
     ak = int(getConfigByKey('authKeyTime'))
-    # if (lock.acquire()):
-
-    #     for dname, _, dlast, dtime, duid, duuid, davartar, dcoin, demail, _ in c.execute():
-    #         if (time() < dlast+ak):
-    #             obj.update()
-    #             break
-    #     else:
-    #         obj = None
-    #     lock.release()
-
-    #     return obj
     q = query("""SELECT * FROM user WHERE "authkey"=(?)""",
               [authkey], one=True)
-    print(time(), q['last'], ak)
     if (time() < q['last']+ak):
         obj.update(
             {"name": q['name'],
@@ -58,5 +46,4 @@ def validate_authkey(authkey: str) -> None | dict:
     else:
         obj = None
     return obj
-
 # ---------------------------------------------------------------------------
