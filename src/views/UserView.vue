@@ -40,7 +40,6 @@ export default {
             this.$router.push('/user')
         } else {
             this.$http.get(`/api/user/info/${this.$route.params.uid}`).then((res) => {
-                console.log(res.data)
                 if (res.data.code == 1020) {
                     this.$message.error(res.data.msg)
                     this.$router.push('/user')
@@ -59,4 +58,5 @@ export default {
 </script>
 
 <style>
+
 </style>
