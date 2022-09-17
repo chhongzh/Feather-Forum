@@ -1,4 +1,5 @@
 # ---------------------------------------------------------------------------
+from math import ceil
 from flask import Blueprint, request
 from lib.request import buildRequest
 from lib.request import request_parse
@@ -7,6 +8,8 @@ from time import time
 from lib.database import getConfigByKey
 from lib import share
 from lib.authkey import validate_authkey
+from lib.database import query
+from lib.user import getNameByUid
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -100,21 +103,21 @@ def ListPost():
     page = p * \
         data.get('page', default=0, type=int)
     obj = []
-    if (lock.acquire()):
-        for dname, duid, dcoin, dtime, dlast, davartar in c.execute(f"SELECT name,uid,coin,time,last,avartar FROM user LIMIT {p} OFFSET {page}"):
-            obj1 = {}
-            obj1.update({
-                "name": dname,
-                "uid": duid,
-                "coin": dcoin,
-                "time": dtime,
-                "last": dlast,
-                "avartar": davartar
-            })
-            obj.append(obj1)
-        lock.release()
-    last = False
-    if (len(obj) < p):
-        last = True
-    return buildRequest(Code.REQUEST_OK, "查询成功", list=obj, last=last)
+    for v in query("SELECT * FROM post LIMIT (?) OFFSET (?)", [p, page]):
+        v['name'] = getNameByUid(v['uid'])
+        obj.append(v)
+    return buildRequest(Code.REQUEST_OK, "查询成功", list=obj)
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+
+
+@blueprint.route("/page")
+def PageUser():
+    total = 0
+    total = query('SELECT count(*) FROM post', one=True)['count(*)']
+    page = int(getConfigByKey('itemLimit'))
+    total = ceil(total/page)
+
+    return buildRequest(Code.REQUEST_OK, msg="查询成功", page=total-1)
 # ---------------------------------------------------------------------------

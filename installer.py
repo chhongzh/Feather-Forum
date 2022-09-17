@@ -6,7 +6,7 @@ import socket
 from sqlite3 import connect
 from pip import main
 try:
-    from flask import Flask, render_template, request
+    from flask import Flask, render_template
     from flask_socketio import SocketIO
 except ImportError:
     print('安装Flask')
@@ -176,9 +176,19 @@ def installrun(data):
     INSERT INTO "config" ("value", "key") VALUES ('5', 'itemLimit');
     COMMIT;
 
+
+    -- ----------------------------
+    -- Table structure for follow
+    -- ----------------------------
+    DROP TABLE IF EXISTS "follow";
+    CREATE TABLE "follow" (
+    "from" INTEGER NOT NULL,
+    "to" INTEGER NOT NULL,
+    "time" INTEGER,
+    "fromcache" TEXT NOT NULL,
+    "tocache" TEXT NOT NULL
+    );
     PRAGMA foreign_keys = true;
-
-
     """)
     conn.commit()
     conn.close()

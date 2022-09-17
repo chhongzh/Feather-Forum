@@ -1,16 +1,18 @@
 <template>
     <el-card>
         <template #header><b>帖子列表</b></template>
-        <el-empty v-show="mems.length <= 0" description="没有数据">
+        <el-empty v-show="posts.length <= 0" description="没有数据">
 
         </el-empty>
-        <div v-for="(mem, index) in mems" :key="index">
+        <div v-for="(pst, index) in posts" :key="index">
             <el-card>
                 <template #header>
-                    {{ mem.name }}
+                    <router-link :to="`/post/${pst.uid}`">
+                        <el-link>{{ pst.title }}</el-link>
+                    </router-link>
                 </template>
-
-                <el-descriptions>
+                {{pst}}
+                <!-- <el-descriptions>
                     <el-descriptions-item label="个性签名">
                         {{ mem.avartar }}
                     </el-descriptions-item>
@@ -24,7 +26,9 @@
                         {{ mem.time }}
                     </el-descriptions-item>
 
-                </el-descriptions>
+                </el-descriptions> -->
+                <el-divider></el-divider>
+                {{pst.uid}}
             </el-card>
             <div class="foot-space"></div>
         </div>
@@ -45,24 +49,19 @@ export default {
             totalPage: 1,
             page: 1,
             cache: 0,
-            mems: []
+            posts: []
         }
     },
     mounted() {
-        this.$http.get('/api/user/page').then((res) => {
+        this.$http.get('/api/post/page').then((res) => {
             this.totalPage = res.data.data.page + 1
         })
         this.onChange()
     },
     methods: {
         onChange() {
-            this.$http(`/api/user/list?page=${this.page - 1}`).then((res) => {
-                this.mems = res.data.data.list
-                this.mems = []
-                for (var i = 0; i < res.data.data.list.length; i++) {
-                    res.data.data.list[i].time = transformTime(res.data.data.list[i].time * 1000)
-                    this.mems.push(res.data.data.list[i])
-                }
+            this.$http(`/api/post/list?page=${this.page - 1}`).then((res) => {
+                this.posts = res.data.data.list
             })
                 .catch((res) => {
                     this.$message.error(res);
@@ -74,4 +73,5 @@ export default {
 </script>
 
 <style>
+
 </style>

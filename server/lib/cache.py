@@ -14,7 +14,7 @@ class Cache(object):
         self.checkExpired()
         self.data[itemName] = item
         if (expired > 0):
-            self.expired[itemName] == expired
+            self.expired[itemName] = expired
 
     def removeItem(self, itemName: str) -> None:
         self.checkExpired()

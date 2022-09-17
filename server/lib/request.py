@@ -13,6 +13,7 @@ def buildRequest(code: int, msg: str = "", **kwargs) -> str:
     k = {}
     for key, value in kwargs.items():
         k.update({key: value})
+    # if (len(kwargs) != 0):
     obj.update({"data": k})
     return dumps(obj, ensure_ascii=False)
 # ---------------------------------------------------------------------------

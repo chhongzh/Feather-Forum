@@ -27,11 +27,13 @@ def validate_authkey(authkey: str) -> None | dict:
             len(authkey) < 36 or
             '-' not in authkey or
             isSpecil(authkey)
-            ):
+        ):
         return None
     ak = int(getConfigByKey('authKeyTime'))
     q = query("""SELECT * FROM user WHERE "authkey"=(?)""",
               [authkey], one=True)
+    if (q is None):
+        return None
     if (time() < q['last']+ak):
         obj.update(
             {"name": q['name'],
