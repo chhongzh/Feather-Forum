@@ -64,10 +64,6 @@
       </el-row>
       <div class="foot-layout-right">
         <p>
-          <router-link to="/help">
-            <el-link type="primary">帮助</el-link>
-          </router-link>
-          &nbsp;
           <el-link type="primary" @click="changeReload">重新加载</el-link>
         </p>
       </div>
@@ -109,17 +105,6 @@ export default {
     }
   },
   mounted() {
-    if (!localStorage.getItem('accept')) {
-      this.$alert('您使用本网站必须同意 "<b>隐私条款</b>" 以及 "<b>Cookie协议</b>" <br />继续使用则代表同意本条款<br /> 如果您不同意,请关闭本网页', '条款与协议', {
-        dangerouslyUseHTMLString: true,
-        confirmButtonText: '我接受',
-        callback: (action) => {
-          localStorage.setItem('accept', 'true')
-        }
-      })
-    }
-
-
     if (config.webhost == 'auto') {
       this.weblink = document.domain
     } else {
