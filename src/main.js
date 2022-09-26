@@ -58,11 +58,9 @@ NProgress.configure({
   minimum: 0.3, // 初始化时的最小百分比
 });
 
-// Axios.defaults.baseURL="http://192.168.3.33:14524"
 Axios.defaults.baseURL = config.baseURL;
 
 router.beforeEach((to, from, next) => {
-  // 每次切换页面时，调用进度条
   NProgress.start();
   next();
 });
