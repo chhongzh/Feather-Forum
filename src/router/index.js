@@ -47,11 +47,6 @@ const routes = [
     name: "用户列表",
     component: () => import("../views/UsersView.vue"),
   },
-  {
-    path: "/help",
-    name: "帮助",
-    component: () => import("../views/HelpView.vue"),
-  },
   // Start Admin
 
   {
@@ -71,15 +66,10 @@ const routes = [
   },
   // Close Admin
   {
-    path: "/error/404",
-    name: "错误",
-    component: () => import("../views/404View.vue"),
-  },
-  {
     // 404 redircet
     path: "/:catchAll(.*)",
-    // name:'错误',
-    redirect: "/error/404",
+    name: "错误",
+    component: () => import("../views/404View.vue"),
   },
 ];
 
