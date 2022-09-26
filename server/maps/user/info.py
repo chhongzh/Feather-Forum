@@ -62,6 +62,6 @@ def PublicInfo(uid: str):
                             last=i["last"],
                             uuid=i["uuid"],
                             avartar=i["avartar"],
-                            authkey=True)
+                            )
     return buildRequest(Code.REQUEST_BAD_QUERY, '未知的id')
 # ---------------------------------------------------------------------------
