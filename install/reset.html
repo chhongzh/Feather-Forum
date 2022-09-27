@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}1{% endblock %}
+
+{% block main %}
+<div>
+    <p>本向导将会引导您重置Feather Forum</p>
+    <br>
+    <p>将会重置一下内容</p>
+    <ul>
+        <li>清空用户</li>
+        <li>清空帖子</li>
+        <li>清空评论</li>
+        <li>重置所有配置</li>
+    </ul>
+    <b class="text-danger">此操作十分危险,重置后无法撤回</b>
+    <div style="margin:0px;max-height: 300px;overflow-y: auto" id="console"></div>
+    <br>
+    <button id="danger" class="btn btn-danger">我已知风险并重置</button>
+    <script>
+        const clog = (msg) => {
+            $('#console').prepend(`<pre>[CLIENT] ${msg}</pre><br>`)
+        }
+        const slog = (msg) => {
+            $('#console').prepend(`<pre>[SERVER] ${msg}</pre><br>`)
+        }
+        $(document).ready(() => {
+            ws = io()
+            ws.on('connect', (msg) => {
+                clog('Ws 服务器已建立连接!')
+            })
+            ws.on('server log', (msg) => {
+                slog(msg)
+            })
+            ws.on('reset done', () => {
+                slog('重置已完成')
+                clog('Done!')
+                ws.emit('server stop')
+            })
+        })
+
+        $('#danger').click(() => {
+            clog('发送重置任务')
+            ws.emit('reset start')
+        })
+    </script>
+
+    {% endblock %}
