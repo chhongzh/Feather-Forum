@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-affix>
-      <el-header>
+      <el-header v-show="!$route.meta.hideHeader">
         <el-menu mode="horizontal" :ellipsis="false" :router="true" :default-active="$route.path">
           <el-menu-item index="/" style="font-size:14px">{{ forumName }}</el-menu-item>
           <el-sub-menu index="帖子">
@@ -41,7 +41,7 @@
       <router-view :key="$route.fullPath" />
       <!-- End router -->
     </el-main>
-    <el-footer class="little">
+    <el-footer v-show="!$route.meta.hideFooter" class="little">
       <div class="foot-space"></div>
       <b>{{ userAgent }}</b>
       <el-row>
@@ -203,14 +203,6 @@ export default {
 </script>
 
 <style>
-* {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  /* font-family: 'Nunito', 'Helvetica Neue', Helvetica, Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', sans-serif; */
-}
-
-
 .flex-grow {
   flex-grow: 1;
 }
