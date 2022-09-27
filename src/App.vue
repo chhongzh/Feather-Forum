@@ -197,9 +197,8 @@ export default {
       this.b = ""
 
       return true
-    }
+    },
   },
-  // 监听,当路由发生变化的时候执行
 }
 </script>
 
