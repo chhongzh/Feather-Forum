@@ -18,7 +18,6 @@ export default {
             postAuther: '',
             postTime: '',
             postContent: '',
-            postInfo: ''
         }
     },
     mounted() {
@@ -40,23 +39,36 @@ export default {
             this.$message.error('非法帖子id');
             this.$router.push('/')
         }
-        this.$http.post('/api/post/read', {
-            authkey: localStorage.getItem('authkey'),
-            pid: this.$route.params.pid
-        }).then((res) => {
-            if (res.data.code = 200) {
-                this.postTitle = res.data.data.title
-                this.postAuther = res.data.data.name
-                this.postContent = res.data.data.content
-                this.postTime = res.data.data.time
-                this.postTime = transformTime(this.postTime * 1000)
+        console.log(window.sessionStorage.getItem('cacheOBJpid'))
+        if (window.sessionStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
+            this.postTitle = window.sessionStorage.getItem('cacheOBJtitle')
+            this.postAuther = window.sessionStorage.getItem('cacheOBJauther')
+            this.postContent = window.sessionStorage.getItem('cacheOBJcontent')
+            this.postTime = window.sessionStorage.getItem('cacheOBJtime')
+        } else {
+            this.$http.post('/api/post/read', {
+                authkey: localStorage.getItem('authkey'),
+                pid: this.$route.params.pid
+            }).then((res) => {
+                if (res.data.code = 200) {
+                    window.sessionStorage.setItem('cacheOBJpid', this.$route.params.pid)
+                    window.sessionStorage.setItem('cacheOBJtitle', res.data.data.title)
+                    window.sessionStorage.setItem('cacheOBJauther', res.data.data.name)
+                    window.sessionStorage.setItem('cacheOBJcontent', res.data.data.content)
+                    window.sessionStorage.setItem('cacheOBJtime', transformTime(res.data.data.time * 1000))
 
-                this.postInfo = "# " + this.postTitle + "\n" + "由 " + this.postAuther + " 发布于 " + this.postTime
-            }
-        }).catch((res) => {
-            this.$message.error('网络错误');
-            this.$router.push('/')
-        })
+                    console.log(1)
+                    this.postTitle = res.data.data.title
+                    this.postAuther = res.data.data.nam
+                    this.postContent = res.data.data.content
+                    this.postTime = res.data.data.time
+                    this.postTime = transformTime(this.postTime * 1000)
+                }
+            }).catch((res) => {
+                this.$message.error('网络错误');
+                this.$router.push('/')
+            })
+        }
     },
 
 
