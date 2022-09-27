@@ -5,24 +5,18 @@
   "scripts": {
     "client": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "server": "cd server && python3 server.py && cd ../"
+    "server3": "cd server && python3 server.py && cd ../",
+    "server": "cd server && python server.py && cd ../"
   },
   "dependencies": {
     "@kangc/v-md-editor": "^2.3.15",
     "axios": "^0.27.2",
-    "babel-plugin-prismjs": "^2.1.0",
     "core-js": "^3.25.0",
-    "dayjs": "^1.11.5",
-    "echarts": "^5.3.3",
     "element-plus": "^2.2.16",
     "highlight.js": "^11.6.0",
-    "mavon-editor": "^2.10.4",
     "nprogress": "^0.2.0",
-    "prismjs": "^1.29.0",
-    "tinymce": "^6.1.2",
     "vue": "^3.2.38",
     "vue-axios": "^3.4.1",
-    "vue-echarts": "^6.2.3",
     "vue-router": "^4.1.5",
     "vue-socket.io": "^3.0.10",
     "vuex": "^4.0.2"
