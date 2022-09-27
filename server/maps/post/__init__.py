@@ -10,6 +10,7 @@ from lib import share
 from lib.authkey import validate_authkey
 from lib.database import query
 from lib.user import getNameByUid
+from re import findall, search, sub
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -37,16 +38,17 @@ def WritePost():
     if (ak):
         uid = ak["uid"]
         ttime = int(time())
-        content = content.replace('"', '""').replace("'", "''")
-        title = title.replace('"', '""').replace("'", "''")
-        if (lock.acquire()):
-            c.execute(f"""
+        for title, link in findall(r"(?<!!)\[(.*?)\]\((.*?)\)", content):
+            new = "#/jump?url={}".format(link)
+            content = content.replace("[{}]({})".format(title, link),
+                                      "[{}]({})".format(title, new), 1)
+        query("""
             INSERT INTO post (title,content,uid,time)
-            VALUES ('{title}', '{content}', {uid}, {ttime});
-            """)
-            conn.commit()
-            lock.release()
-            return buildRequest(Code.REQUEST_OK, "帖子已经推送,等待审核")
+            VALUES ((?),(?),(?),(?))
+            """, (title, content, uid, ttime))
+        conn.commit()
+
+        return buildRequest(Code.REQUEST_OK, "帖子发布成功")
     else:
         return buildRequest(Code.REQUEST_BAD_AUTHKEY, "无法验证authkey")
 # ---------------------------------------------------------------------------
