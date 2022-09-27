@@ -34,7 +34,6 @@ export default {
         }
     },
     mounted() {
-        console.log()
         if (isNaN(this.$route.params.uid) || Number(this.$route.params.uid) <= 0) {
             this.$message.error(isNaN(this.$route.params.uid) ? '用户id应为数字' : '用户id应大于等于0');
             this.$router.push('/user')

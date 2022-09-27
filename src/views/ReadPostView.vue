@@ -1,22 +1,12 @@
 <template>
-
-    <!-- <v-md-editor :model-value="postInfo" mode="preview"></v-md-editor> -->
     <el-card shadow="hover">
         <template #header>
             <h1>{{ postTitle }}</h1>
             <p style="color:var(--el-text-color-regular)">
-                <font-awesome-icon icon="fa-regular fa-user" />&nbsp;{{ postAuther }}
-                &nbsp;&nbsp;
-                <font-awesome-icon icon="fa-regular fa-clock" />&nbsp;{{ postTime }}
             </p>
         </template>
         <v-md-editor :model-value="postContent" mode="preview"></v-md-editor>
-
     </el-card>
-
-
-
-
 </template>
 
 <script>
@@ -64,7 +54,6 @@ export default {
                 this.postInfo = "# " + this.postTitle + "\n" + "由 " + this.postAuther + " 发布于 " + this.postTime
             }
         }).catch((res) => {
-            console.log(res)
             this.$message.error('网络错误');
             this.$router.push('/')
         })

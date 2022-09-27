@@ -55,7 +55,6 @@ export default {
                 return false
             }
             if (this.checkTitle()) {
-                console.log(this.markdown)
                 this.$http.post('/api/post/write', {
                     title: this.postTitle,
                     content: this.markdown,
