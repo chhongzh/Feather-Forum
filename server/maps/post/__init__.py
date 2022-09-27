@@ -38,10 +38,6 @@ def WritePost():
     if (ak):
         uid = ak["uid"]
         ttime = int(time())
-        for title, link in findall(r"(?<!!)\[(.*?)\]\((.*?)\)", content):
-            new = "#/jump?url={}".format(link)
-            content = content.replace("[{}]({})".format(title, link),
-                                      "[{}]({})".format(title, new), 1)
         query("""
             INSERT INTO post (title,content,uid,time)
             VALUES ((?),(?),(?),(?))
@@ -55,6 +51,8 @@ def WritePost():
 
 
 # ---------------------------------------------------------------------------
+
+
 @blueprint.route('/read', methods=["POST"])
 def PostRead():
     data = request_parse(request)
@@ -63,17 +61,16 @@ def PostRead():
     if (not str(data.get('pid')).isdigit()):
         return buildRequest(Code.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
     pid = data.get('pid')
-    if (lock.acquire()):
-        for dtitle, dcontent, duid, dtime, dpid in c.execute(f"""
-        SELECT title,content,uid,time,pid FROM post WHERE pid={int(pid)}
-        """):
-            for dname in c.execute(f"SELECT name,uid FROM user WHERE uid = {int(duid)}"):
-                lock.release()
-                return buildRequest(Code.REQUEST_OK, "查询成功", title=dtitle, content=dcontent, time=dtime, name=dname[0])
-            lock.release()
-            return buildRequest(Code.REQUEST_BAD_QUERY, "帖子不存在")
-        lock.release()
+    post = query(
+        "SELECT title,content,uid,time,pid FROM post WHERE pid=(?)", pid, one=True)
+    if (not post):
         return buildRequest(Code.REQUEST_BAD_QUERY, "帖子不存在")
+    for title, link in findall(r"(?<!!)\[(.*?)\]\((.*?)\)", post['content']):
+        new = "#/jump?url={}".format(link)
+        post['content'] = post['content'].replace("[{}]({})".format(title, link),
+                                                  "[{}]({}&path=/post/{})".format(title, new, pid), 1)
+    name = getNameByUid(post['uid'])
+    return buildRequest(Code.REQUEST_OK, "查询成功", title=post['title'], content=post['content'], time=post['time'], name=name)
 # ---------------------------------------------------------------------------
 
 
