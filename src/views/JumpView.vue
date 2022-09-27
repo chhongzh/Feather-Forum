@@ -3,7 +3,8 @@
         <el-card header="跳转提示" style="width:80%">
             <p><b>{{$route.query.url}}</b>不属于{{forum}},继续前往?</p>
             <div style="text-align: right;">
-                <el-button @click="f">继续前往</el-button>
+                <el-button @click="b">返回</el-button>
+                <el-button @click="f">在新标签页打开并返回</el-button>
             </div>
         </el-card>
     </el-row>
@@ -17,9 +18,19 @@ export default {
             forum: config.forumName
         }
     },
+    mounted() {
+        if ((!this.$route.query.path) || (!this.$route.query.url)) {
+            this.$message.error('参数缺失');
+            this.$router.push('/')
+        }
+    },
     methods: {
         f() {
-            window.location.href = this.$route.query.url
+            window.open(this.$route.query.url, "_blank")
+            this.$router.push(this.$route.query.path)
+        },
+        b() {
+            this.$router.push(this.$route.query.path)
         }
     }
 }
