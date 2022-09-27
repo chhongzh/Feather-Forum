@@ -3,6 +3,10 @@
     </el-input>
     <p class="alert">{{ a }}</p>
     <div class="foot-space"></div>
+    <v-md-editor
+        left-toolbar="undo redo | h bold italic strikethrough quote emoji | ul ol table hr todo-list | link image code tip"
+        v-model="markdown" height="400px">
+    </v-md-editor>
     <v-md-editor v-model="markdown" height="400px"></v-md-editor>
     <div class="foot-space"></div>
     <el-button @click="post()" type="primary">提交</el-button>
