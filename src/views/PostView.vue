@@ -83,28 +83,3 @@ export default {
     }
 }
 </script>
-
-<style>
-/* html.dark {
-    --w-e-textarea-bg-color: var(--el-bg-color);
-    --w-e-textarea-color: #EBEDF0;
-    --w-e-textarea-border-color: #D4D7DE;
-    --w-e-textarea-slight-border-color: #D4D7DE;
-    --w-e-textarea-slight-color: #d4d4d4;
-    --w-e-textarea-slight-bg-color: var(--el-bg-color);
-    --w-e-textarea-selected-border-color: #B4D5FF;
-    --w-e-textarea-handler-bg-color: #4290f7;
-
-    --w-e-toolbar-color: #FFFFFF;
-    --w-e-toolbar-bg-color: var(--el-bg-color);
-    --w-e-toolbar-active-color: #333;
-    --w-e-toolbar-active-bg-color: var(--el-bg-color);
-    --w-e-toolbar-disabled-color: var(--el-color-info-dark-2);
-    --w-e-toolbar-border-color: #D4D7DE;
-
-
-    --w-e-modal-button-bg-color: var(--el-bg-color);
-    --w-e-modal-button-border-color: #d9d9d9;
-   
-} */
-</style>
