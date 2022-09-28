@@ -8,7 +8,6 @@ import Axios from "axios";
 import NProgress from "nprogress";
 import config from "./assets/js/config";
 
-import "./assets/css/prism.css";
 import "nprogress/nprogress.css";
 import "element-plus/theme-chalk/dark/css-vars.css";
 import "element-plus/dist/index.css";
