@@ -40,10 +40,5 @@ app.register_error_handler(404, ApiNotFound)
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-log.info(
-    'FeatherForum版本({}.{}.{})'.format(Config.Version[0], Config.Version[1], Config.Version[2]))
-log.info(
-    version
-)
-app.run(port=Config.ServerPort, debug=Config.UseDebugMode)
+app.run(port=Config.ServerPort, debug=Config.UseDebugMode, host=Config.Host)
 # ---------------------------------------------------------------------------
