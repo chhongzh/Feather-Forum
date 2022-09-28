@@ -3,6 +3,7 @@
         <template #header>
             <h1>{{ postTitle }}</h1>
             <p style="color:var(--el-text-color-regular)">
+                用户:<b>{{postAuther}}</b> 发布于:<b>{{postTime}}</b>
             </p>
         </template>
         <v-md-editor :model-value="postContent" mode="preview"></v-md-editor>
@@ -40,7 +41,7 @@ export default {
             this.$router.push('/')
         }
         console.log(window.sessionStorage.getItem('cacheOBJpid'))
-        if (window.sessionStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
+        if (window.sessionStorage.getItem('cacheOBJpid') && window.sessionStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
             this.postTitle = window.sessionStorage.getItem('cacheOBJtitle')
             this.postAuther = window.sessionStorage.getItem('cacheOBJauther')
             this.postContent = window.sessionStorage.getItem('cacheOBJcontent')
