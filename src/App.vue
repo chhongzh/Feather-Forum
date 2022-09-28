@@ -158,28 +158,6 @@ export default {
       this.changeReload()
     },
 
-    // login
-    submitLogin() {
-      if (this.checkName() && this.checkPw()) {
-        this.$http.post("/api/user/login", {
-          name: this.nm,
-          pw: this.pw
-        }).then((request) => {
-          if (request.data.code == 1011) {
-            this.$message.error(request.data.msg)
-            this.nm = ""
-            this.pw = ""
-          } else {
-            this.$message.success(request.data.msg)
-            localStorage.setItem('authkey', request.data.data.authkey)
-            localStorage.setItem('needRef', '/')
-            this.$router.push("/")
-          }
-        }).catch((error) => {
-          this.$message.error("登录失败,请检查网络连接!")
-        })
-      }
-    },
     checkNameLogin() {
       if (this.nm == "") {
         this.a = "填写此字段"
