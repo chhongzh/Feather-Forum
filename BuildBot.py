@@ -2,6 +2,7 @@ from json import dump, load
 import os
 import time
 from InquirerPy import inquirer
+from tqdm import tqdm
 import git
 import copy
 import zipfile
@@ -13,14 +14,13 @@ print('当前版本:{}'.format(data['version']))
 old = copy.deepcopy(data['version'])
 
 
-def makezip(name, path, type: zipfile.ZIP_STORED | zipfile.ZIP_DEFLATED = zipfile.ZIP_STORED, dis=["node_modules", ".git", "build"]):
+def makezip(name, path, type: zipfile.ZIP_STORED | zipfile.ZIP_DEFLATED = zipfile.ZIP_STORED, dis=["node_modules", ".git", "build", ".vscode", "__pycache__"], disfile=['.gitignore', 'BuildBot.py', '.gitattributes', 'yarn.lock']):
     with zipfile.ZipFile(name+'.zip', 'w') as z:
         for root, dirs, files in os.walk(path):
             dirs[:] = [d for d in dirs if d not in dis]
-            for file in files:
-                if (file == 'BuildBot.py'):
+            for file in tqdm(files, desc="Zipping file..."):
+                if (file in disfile):
                     continue
-                print(f'打包文件:{file}')
                 fullpath = os.path.join(root, file)
                 z.write(fullpath, compress_type=type)
 
