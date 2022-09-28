@@ -2,23 +2,54 @@
     <el-card shadow="hover">
         <template #header>
             <h1>{{ postTitle }}</h1>
-            <p style="color:var(--el-text-color-regular)">
-                用户:<b>{{postAuther}}</b> 发布于:<b>{{postTime}}</b>
-            </p>
+            <el-row justify="space-between">
+                <el-col :span="12">
+                    <el-icon>
+                        <User />
+                    </el-icon>
+                    <b>
+                        <router-link style="color:var(--el-text-color-primary)" :to="`/user/${postUid}`">
+                            {{postAuther}}
+                        </router-link>
+                    </b>
+                    ·
+                    <el-icon>
+                        <Calendar />
+                    </el-icon>
+                    <b>{{postTime}}</b>
+                </el-col>
+                <el-col :span="12" style="text-align:right">
+                    <el-popover title="分享" placement="top" width="400px">
+                        <template #reference>
+                            <el-icon>
+                                <Share />
+                            </el-icon>
+                        </template>
+                        <el-button-group>
+                            <el-button @click="shareWithMail">Mail</el-button>
+                        </el-button-group>
+                    </el-popover>
+
+                </el-col>
+            </el-row>
         </template>
         <v-md-editor :model-value="postContent" mode="preview"></v-md-editor>
     </el-card>
 </template>
 
 <script>
+import { User, Calendar, Share } from '@element-plus/icons-vue'
 import { transformTime } from '../assets/js/date.js'
+import config from '@/assets/js/config'
 export default {
+    components: { User, Calendar, Share },
     data() {
         return {
             postTitle: '',
             postAuther: '',
             postTime: '',
             postContent: '',
+            postUid: '',
         }
     },
     mounted() {
@@ -40,12 +71,12 @@ export default {
             this.$message.error('非法帖子id');
             this.$router.push('/')
         }
-        console.log(window.sessionStorage.getItem('cacheOBJpid'))
-        if (window.sessionStorage.getItem('cacheOBJpid') && window.sessionStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
+        if (typeof (window.sessionStorage.getItem('cacheOBJpid')) != undefined && window.sessionStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
             this.postTitle = window.sessionStorage.getItem('cacheOBJtitle')
             this.postAuther = window.sessionStorage.getItem('cacheOBJauther')
             this.postContent = window.sessionStorage.getItem('cacheOBJcontent')
             this.postTime = window.sessionStorage.getItem('cacheOBJtime')
+            this.postUid = window.sessionStorage.getItem('cacheOBJuid')
         } else {
             this.$http.post('/api/post/read', {
                 authkey: localStorage.getItem('authkey'),
@@ -57,10 +88,9 @@ export default {
                     window.sessionStorage.setItem('cacheOBJauther', res.data.data.name)
                     window.sessionStorage.setItem('cacheOBJcontent', res.data.data.content)
                     window.sessionStorage.setItem('cacheOBJtime', transformTime(res.data.data.time * 1000))
-
-                    console.log(1)
+                    window.sessionStorage.setItem('cacheOBJuid', res.data.data.uid)
                     this.postTitle = res.data.data.title
-                    this.postAuther = res.data.data.nam
+                    this.postAuther = res.data.data.name
                     this.postContent = res.data.data.content
                     this.postTime = res.data.data.time
                     this.postTime = transformTime(this.postTime * 1000)
@@ -71,8 +101,14 @@ export default {
             })
         }
     },
-
-
+    methods: {
+        shareWithMail() {
+            var body = `我在${config.forumName}看到了由${this.postAuther}发布的文章。\n链接:${document.URL}`
+            var title = `文章分享:${this.postTitle}`
+            var template = encodeURI(`mailto:?subject=${title}&body=${body}`)
+            window.open(template, '_blank')
+        },
+    }
 }
 </script>
 

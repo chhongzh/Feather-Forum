@@ -70,7 +70,7 @@ def PostRead():
         post['content'] = post['content'].replace("[{}]({})".format(title, link),
                                                   "[{}]({}&path=/post/{})".format(title, new, pid), 1)
     name = getNameByUid(post['uid'])
-    return buildRequest(Code.REQUEST_OK, "查询成功", title=post['title'], content=post['content'], time=post['time'], name=name)
+    return buildRequest(Code.REQUEST_OK, "查询成功", title=post['title'], content=post['content'], time=post['time'], name=name, uid=post['uid'])
 # ---------------------------------------------------------------------------
 
 
