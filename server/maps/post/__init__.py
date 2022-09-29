@@ -68,7 +68,7 @@ def PostRead():
     for title, link in findall(r"(?<!!)\[(.*?)\]\((.*?)\)", post['content']):
         new = "#/jump?url={}".format(link)
         post['content'] = post['content'].replace("[{}]({})".format(title, link),
-                                                  "[{}]({}&path=/post/{})".format(title, new, pid), 1)
+                                                  "[{}]({}&redirect=/post/{})".format(title, new, pid), 1)
     name = getNameByUid(post['uid'])
     return buildRequest(Code.REQUEST_OK, "查询成功", title=post['title'], content=post['content'], time=post['time'], name=name, uid=post['uid'])
 # ---------------------------------------------------------------------------
@@ -102,8 +102,18 @@ def ListPost():
     page = p * \
         data.get('page', default=0, type=int)
     obj = []
-    for v in query("SELECT * FROM post LIMIT (?) OFFSET (?)", [p, page]):
+    for v in query("SELECT * FROM post ORDER BY \"time\" DESC LIMIT (?) OFFSET (?)", [p, page]):
         v['name'] = getNameByUid(v['uid'])
+        v['content'] = v['content'].replace('#', '').replace(
+            ':', ''
+        ).replace('|', ''
+                  ).replace('-', ''
+                            ).replace('\n', ''
+                                      ).replace('*', ''
+                                                ).replace('```', ''
+                                                          ).replace(' ', ''
+                                                                    ).replace('~~', ''
+                                                                              )[:50]
         obj.append(v)
     return buildRequest(Code.REQUEST_OK, "查询成功", list=obj)
 # ---------------------------------------------------------------------------

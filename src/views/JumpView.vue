@@ -19,7 +19,7 @@ export default {
         }
     },
     mounted() {
-        if ((!this.$route.query.path) || (!this.$route.query.url)) {
+        if ((!this.$route.query.redirect) || (!this.$route.query.url)) {
             this.$message.error('参数缺失');
             this.$router.push('/')
         }
@@ -27,10 +27,10 @@ export default {
     methods: {
         f() {
             window.open(this.$route.query.url, "_blank")
-            this.$router.push(this.$route.query.path)
+            this.$router.push(this.$route.query.redirect)
         },
         b() {
-            this.$router.push(this.$route.query.path)
+            this.$router.push(this.$route.query.redirect)
         }
     }
 }
