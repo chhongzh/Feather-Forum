@@ -2,6 +2,7 @@
 from maps import post
 from maps import user
 from maps import other
+from maps import admin
 from lib import cors
 from sys import version
 from lib import share
@@ -20,6 +21,7 @@ app.config['SECRET_KEY'] = Config.SecretKey
 app.register_blueprint(post.blueprint)
 app.register_blueprint(user.blueprint)
 app.register_blueprint(other.blueprint)
+app.register_blueprint(admin.blueprint)
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
@@ -40,5 +42,8 @@ app.register_error_handler(404, ApiNotFound)
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-app.run(port=Config.ServerPort, debug=Config.UseDebugMode, host=Config.Host)
+if (Config.Host):
+    app.run(port=Config.ServerPort, debug=Config.UseDebugMode, host=Config.Host)
+else:
+    app.run(port=Config.ServerPort, debug=Config.UseDebugMode)
 # ---------------------------------------------------------------------------

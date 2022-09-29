@@ -3,7 +3,7 @@
         <template #header>
             <h1>{{ postTitle }}</h1>
             <el-row justify="space-between">
-                <el-col :span="12">
+                <div>
                     <el-icon>
                         <User />
                     </el-icon>
@@ -17,25 +17,28 @@
                         <Calendar />
                     </el-icon>
                     <b>{{postTime}}</b>
-                </el-col>
-                <el-col :span="12" style="text-align:right">
-                    <el-popover title="分享" placement="top" width="400px">
-                        <template #reference>
-                            <el-icon>
-                                <Share />
-                            </el-icon>
-                        </template>
-                        <el-button-group>
-                            <el-button @click="shareWithMail">Mail</el-button>
-                        </el-button-group>
-                    </el-popover>
-
-                </el-col>
+                </div>
+                <el-popover title="分享" placement="top">
+                    <template #reference>
+                        <el-icon>
+                            <Share />
+                        </el-icon>
+                    </template>
+                    <el-button-group>
+                        <el-button @click="shareWithMail">邮箱</el-button>
+                        <el-button @click="shareWithLink">链接</el-button>
+                    </el-button-group>
+                </el-popover>
             </el-row>
         </template>
         <v-md-editor :model-value="postContent" mode="preview"></v-md-editor>
     </el-card>
 </template>
+
+<script setup>
+import { useClipboard } from '@vueuse/core'
+const { text, copy, copied, isSupported } = useClipboard(document.URL)
+</script>
 
 <script>
 import { User, Calendar, Share } from '@element-plus/icons-vue'
@@ -71,24 +74,24 @@ export default {
             this.$message.error('非法帖子id');
             this.$router.push('/')
         }
-        if (typeof (window.sessionStorage.getItem('cacheOBJpid')) != undefined && window.sessionStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
-            this.postTitle = window.sessionStorage.getItem('cacheOBJtitle')
-            this.postAuther = window.sessionStorage.getItem('cacheOBJauther')
-            this.postContent = window.sessionStorage.getItem('cacheOBJcontent')
-            this.postTime = window.sessionStorage.getItem('cacheOBJtime')
-            this.postUid = window.sessionStorage.getItem('cacheOBJuid')
+        if (typeof (window.localStorage.getItem('cacheOBJpid')) != undefined && window.localStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
+            this.postTitle = window.localStorage.getItem('cacheOBJtitle')
+            this.postAuther = window.localStorage.getItem('cacheOBJauther')
+            this.postContent = window.localStorage.getItem('cacheOBJcontent')
+            this.postTime = window.localStorage.getItem('cacheOBJtime')
+            this.postUid = window.localStorage.getItem('cacheOBJuid')
         } else {
             this.$http.post('/api/post/read', {
                 authkey: localStorage.getItem('authkey'),
                 pid: this.$route.params.pid
             }).then((res) => {
                 if (res.data.code = 200) {
-                    window.sessionStorage.setItem('cacheOBJpid', this.$route.params.pid)
-                    window.sessionStorage.setItem('cacheOBJtitle', res.data.data.title)
-                    window.sessionStorage.setItem('cacheOBJauther', res.data.data.name)
-                    window.sessionStorage.setItem('cacheOBJcontent', res.data.data.content)
-                    window.sessionStorage.setItem('cacheOBJtime', transformTime(res.data.data.time * 1000))
-                    window.sessionStorage.setItem('cacheOBJuid', res.data.data.uid)
+                    window.localStorage.setItem('cacheOBJpid', this.$route.params.pid)
+                    window.localStorage.setItem('cacheOBJtitle', res.data.data.title)
+                    window.localStorage.setItem('cacheOBJauther', res.data.data.name)
+                    window.localStorage.setItem('cacheOBJcontent', res.data.data.content)
+                    window.localStorage.setItem('cacheOBJtime', transformTime(res.data.data.time * 1000))
+                    window.localStorage.setItem('cacheOBJuid', res.data.data.uid)
                     this.postTitle = res.data.data.title
                     this.postAuther = res.data.data.name
                     this.postContent = res.data.data.content
@@ -108,6 +111,10 @@ export default {
             var template = encodeURI(`mailto:?subject=${title}&body=${body}`)
             window.open(template, '_blank')
         },
+        shareWithLink() {
+            this.copy(document.URL)
+            this.$message.success('链接已经复制!')
+        }
     }
 }
 </script>

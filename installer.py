@@ -136,10 +136,10 @@ def installrun(data):
     );
 
     -- ----------------------------
-    -- Table structure for superuser
+    -- Table structure for admin
     -- ----------------------------
-    DROP TABLE IF EXISTS "superuser";
-    CREATE TABLE "superuser" (
+    DROP TABLE IF EXISTS "admin";
+    CREATE TABLE "admin" (
     "name" TEXT,
     "pw" TEXT,
     "authkey" TEXT,
@@ -228,10 +228,10 @@ def resetall():
     );
 
     -- ----------------------------
-    -- Table structure for superuser
+    -- Table structure for admin
     -- ----------------------------
-    DROP TABLE IF EXISTS "superuser";
-    CREATE TABLE "superuser" (
+    DROP TABLE IF EXISTS "admin";
+    CREATE TABLE "admin" (
     "name" TEXT,
     "pw" TEXT,
     "authkey" TEXT,

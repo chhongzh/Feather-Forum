@@ -29,7 +29,7 @@
     </el-affix>
     <el-main>
       <div class="foot-space"></div>
-      <div v-show="!$store.state.login">
+      <div v-show="!($store.state.login || $route.meta.hideHeader)">
         <el-card>
           <div>
             <p>访客,请先登录</p>
@@ -181,6 +181,11 @@ export default {
 </script>
 
 <style>
+body {
+  width: 100%;
+  height: 100%;
+}
+
 * {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',

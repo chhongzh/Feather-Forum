@@ -1,23 +1,32 @@
 import { createStore } from "vuex";
-// import { Vue } from "vue";
 
 export default createStore({
   state: {
     login: false,
     name: "",
+    admin: {
+      login: false,
+      authkey: "",
+      last: 0,
+    },
   },
   getters: {},
   mutations: {
     login(state) {
-      // Vue.set(state,"login",true)
       state.login = true;
     },
     logout(state) {
-      // Vue.set(state)
       state.login = false;
     },
     name(state, name) {
       state.name = name;
+    },
+    admin(state, log, authkey) {
+      state.admin.login = log;
+      if (log) {
+        state.admin.authkey = authkey;
+        state.admin.last = new Date().getTime() / 1000;
+      }
     },
   },
   actions: {},

@@ -49,3 +49,20 @@ def validate_authkey(authkey: str) -> None | dict:
         obj = None
     return obj
 # ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+def validate_super(authkey: str) -> None | dict:
+    if (len(authkey) > 36 or
+            len(authkey) < 36 or
+            '-' not in authkey or
+            isSpecil(authkey)
+        ):
+        return None
+    ak = int(getConfigByKey('authKeyTime'))
+    q = query("""SELECT * FROM admin WHERE "authkey"=(?)""",
+              [authkey], one=True)
+    if ((q is None) or (not time() < q['last']+ak)):
+        return None
+    return q
+# ---------------------------------------------------------------------------
