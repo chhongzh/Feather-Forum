@@ -7,28 +7,17 @@
         <div v-for="(pst, index) in posts" :key="index">
             <el-card>
                 <template #header>
-                    <router-link :to="`/post/${pst.uid}`">
+                    <router-link :to="`/post/${pst.pid}`">
                         <el-link>{{ pst.title }}</el-link>
                     </router-link>
                 </template>
-                {{pst}}
-                <!-- <el-descriptions>
-                    <el-descriptions-item label="个性签名">
-                        {{ mem.avartar }}
-                    </el-descriptions-item>
-                    <el-descriptions-item label="UID">
-                        {{ mem.uid }}
-                    </el-descriptions-item>
-                    <el-descriptions-item label="金币">
-                        {{ mem.coin }}
-                    </el-descriptions-item>
-                    <el-descriptions-item label="注册时间">
-                        {{ mem.time }}
-                    </el-descriptions-item>
-
-                </el-descriptions> -->
+                {{pst.content}}
                 <el-divider></el-divider>
-                {{pst.uid}}
+                用户:
+                <router-link :to="`/user/${pst.uid}`">
+                    <el-link>{{pst.name}}</el-link>
+                </router-link>
+                发布于:{{pst.time}}
             </el-card>
             <div class="foot-space"></div>
         </div>
