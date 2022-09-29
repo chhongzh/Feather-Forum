@@ -15,6 +15,92 @@ except ImportError:
     print('请重启脚本!')
     exit(0)
 
+SQL = """
+
+    PRAGMA foreign_keys = false;
+
+    -- ----------------------------
+    -- Table structure for post
+    -- ----------------------------
+    DROP TABLE IF EXISTS "post";
+    CREATE TABLE "post" (
+    "title" TEXT,
+    "content" TEXT,
+    "uid" INTEGER,
+    "time" DATE,
+    "pid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+    );
+
+    -- ----------------------------
+    -- Table structure for logs
+    -- ----------------------------
+    DROP TABLE IF EXISTS "logs";
+    CREATE TABLE "logs" (
+    "trig" TEXT DEFAULT '',
+    "content" TEXT DEFAULT '',
+    "time" INTEGER,
+    "cid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+    );
+
+    -- ----------------------------
+    -- Table structure for admin
+    -- ----------------------------
+    DROP TABLE IF EXISTS "admin";
+    CREATE TABLE "admin" (
+    "name" TEXT,
+    "pw" TEXT,
+    "authkey" TEXT,
+    "last" INTEGER,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+    );
+
+    -- ----------------------------
+    -- Table structure for user
+    -- ----------------------------
+    DROP TABLE IF EXISTS "user";
+    CREATE TABLE "user" (
+    "name" TEXT,
+    "password" TEXT,
+    "last" integer DEFAULT 0,
+    "time" integer,
+    "uid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "uuid" text,
+    "avartar" TEXT DEFAULT 什么都没留下,
+    "coin" integer DEFAULT 0,
+    "email" TEXT,
+    "authkey" TEXT
+    );
+
+    -- ----------------------------
+    -- Table structure for config
+    -- ----------------------------
+    DROP TABLE IF EXISTS "config";
+    CREATE TABLE "config" (
+    "value" TEXT,
+    "key" TEXT
+    );
+
+    -- ----------------------------
+    -- Records of config
+    -- ----------------------------
+    BEGIN;
+    INSERT INTO "config" ("value", "key") VALUES ('1800', 'authKeyTime');
+    INSERT INTO "config" ("value", "key") VALUES ('5', 'itemLimit');
+    COMMIT;
+
+
+    -- ----------------------------
+    -- Table structure for follow
+    -- ----------------------------
+    DROP TABLE IF EXISTS "follow";
+    CREATE TABLE "follow" (
+    "from" INTEGER NOT NULL,
+    "to" INTEGER NOT NULL,
+    "time" INTEGER
+    );
+    PRAGMA foreign_keys = true;
+    """
+
 with open('package.json') as f:
     data = load(f)
 
@@ -119,83 +205,13 @@ def installrun(data):
     io.emit('server log', '执行:初始化数据库')
     conn = connect('server/data.db3', check_same_thread=False)
     c = conn.cursor()
-    c.executescript("""
-
-    PRAGMA foreign_keys = false;
-
-    -- ----------------------------
-    -- Table structure for post
-    -- ----------------------------
-    DROP TABLE IF EXISTS "post";
-    CREATE TABLE "post" (
-    "title" TEXT,
-    "content" TEXT,
-    "uid" INTEGER,
-    "time" DATE,
-    "pid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-    );
-
-    -- ----------------------------
-    -- Table structure for admin
-    -- ----------------------------
-    DROP TABLE IF EXISTS "admin";
-    CREATE TABLE "admin" (
-    "name" TEXT,
-    "pw" TEXT,
-    "authkey" TEXT,
-    "last" INTEGER,
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-    );
-
-    -- ----------------------------
-    -- Table structure for user
-    -- ----------------------------
-    DROP TABLE IF EXISTS "user";
-    CREATE TABLE "user" (
-    "name" TEXT,
-    "password" TEXT,
-    "last" integer DEFAULT 0,
-    "time" integer,
-    "uid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "uuid" text,
-    "avartar" TEXT DEFAULT 什么都没留下,
-    "coin" integer DEFAULT 0,
-    "email" TEXT,
-    "authkey" TEXT
-    );
-
-    -- ----------------------------
-    -- Table structure for config
-    -- ----------------------------
-    DROP TABLE IF EXISTS "config";
-    CREATE TABLE "config" (
-    "value" TEXT,
-    "key" TEXT
-    );
-
-    -- ----------------------------
-    -- Records of config
-    -- ----------------------------
-    BEGIN;
-    INSERT INTO "config" ("value", "key") VALUES ('1800', 'authKeyTime');
-    INSERT INTO "config" ("value", "key") VALUES ('5', 'itemLimit');
-    COMMIT;
-
-
-    -- ----------------------------
-    -- Table structure for follow
-    -- ----------------------------
-    DROP TABLE IF EXISTS "follow";
-    CREATE TABLE "follow" (
-    "from" INTEGER NOT NULL,
-    "to" INTEGER NOT NULL,
-    "time" INTEGER
-    );
-    PRAGMA foreign_keys = true;
-    """)
+    c.executescript(SQL)
     conn.commit()
     conn.close()
-    io.emit('server log', '执行:数据库清理完成')
+    io.emit('server log', '执行:数据库初始化完成')
+    io.emit('server log', '执行:npm install yarn --location=global')  # 修复:issues #1
+    os.system('npm install yarn --location=global')
+    io.emit('server log', '执行:npm install yarn --location=global完成')
     io.emit('server log', '执行:yarn install')
     os.system('yarn install')
     io.emit('server log', '执行:yarn install完成')
@@ -211,80 +227,7 @@ def resetall():
     io.emit('server log', '执行:重置数据库')
     conn = connect('server/data.db3', check_same_thread=False)
     c = conn.cursor()
-    c.executescript("""
-
-    PRAGMA foreign_keys = false;
-
-    -- ----------------------------
-    -- Table structure for post
-    -- ----------------------------
-    DROP TABLE IF EXISTS "post";
-    CREATE TABLE "post" (
-    "title" TEXT,
-    "content" TEXT,
-    "uid" INTEGER,
-    "time" DATE,
-    "pid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-    );
-
-    -- ----------------------------
-    -- Table structure for admin
-    -- ----------------------------
-    DROP TABLE IF EXISTS "admin";
-    CREATE TABLE "admin" (
-    "name" TEXT,
-    "pw" TEXT,
-    "authkey" TEXT,
-    "last" INTEGER,
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-    );
-
-    -- ----------------------------
-    -- Table structure for user
-    -- ----------------------------
-    DROP TABLE IF EXISTS "user";
-    CREATE TABLE "user" (
-    "name" TEXT,
-    "password" TEXT,
-    "last" integer DEFAULT 0,
-    "time" integer,
-    "uid" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "uuid" text,
-    "avartar" TEXT DEFAULT 什么都没留下,
-    "coin" integer DEFAULT 0,
-    "email" TEXT,
-    "authkey" TEXT
-    );
-
-    -- ----------------------------
-    -- Table structure for config
-    -- ----------------------------
-    DROP TABLE IF EXISTS "config";
-    CREATE TABLE "config" (
-    "value" TEXT,
-    "key" TEXT
-    );
-
-    -- ----------------------------
-    -- Records of config
-    -- ----------------------------
-    BEGIN;
-    INSERT INTO "config" ("value", "key") VALUES ('1800', 'authKeyTime');
-    INSERT INTO "config" ("value", "key") VALUES ('5', 'itemLimit');
-    COMMIT;
-
-
-    -- ----------------------------
-    -- Table structure for follow
-    -- ----------------------------
-    DROP TABLE IF EXISTS "follow";
-    CREATE TABLE "follow" (
-    "from" INTEGER NOT NULL,
-    "to" INTEGER NOT NULL,
-    "time" INTEGER
-    );
-    PRAGMA foreign_keys = true;
-    """)
+    c.executescript(SQL)
     conn.commit()
     conn.close()
     io.emit('server log', '执行:重置数据库完成')
