@@ -77,7 +77,7 @@
             $('#hide').hide(750)
             $('#console').show(750)
             $('#span').prepend('<div class="spinner-border" role="status"></div><span class="sr-only">&nbsp&nbsp&nbsp内容已处理,请稍等...</span>')
-            ws.emit('install run', { data: { name: $('#name').val(), api: $('#api').val() } })
+            ws.emit('install run', { data: { name: $('#name').val(), api: $('#api').val(), hideFeather: $('#f').prop('checked') } })
         })
     </script>
 </div>

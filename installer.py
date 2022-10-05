@@ -192,7 +192,7 @@ def installrun(data):
     obj['forumName'] = data['name']
     obj['baseURL'] = data['api']
     obj['webhost'] = 'auto'
-    obj['hideFeather'] = False
+    obj['hideFeather'] = data['hideFeather']
     obj = dumps(obj, ensure_ascii=False)
     with open('src/assets/js/config.js', 'w') as f:
         f.write("export default "+obj+";")
