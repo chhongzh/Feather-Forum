@@ -31,27 +31,28 @@
 
 ## 快速开始
 
-在安装之前,您必须先安装[Node>=16](https://nodejs.org/zh-cn/download/current/)和[Python3.9.6>=](https://www.python.org/downloads/)
+在安装之前,您必须先安装[Node17及以上版本](https://nodejs.org/zh-cn/download/current/)和[Python3.9.6及以上版本](https://www.python.org/downloads/)
 
-### 编译前端
+### 下载
+你可以选择以下方式下载此仓库
+#### 通过Releases下载
+[访问这里]()可以获得最新版本的Feather-Forum。
 
+#### 通过克隆仓库下载
+此方式下载的是非**稳定版**!
 ```shell
-# 克隆仓库
 git clone https://github.com/chhongzh/Feather-Forum.git
-
-cd Feather-Forum
-
-python3 installer.py
 ```
 
-根据提示打开在线安装网页,根据提示填写并完善信息即可
+### 安装
+```shell
+cd Feather-Forum
 
-
-### 启动后端
-
-接下来你需要启动server文件夹下的server.py 即可
-
-<p align="right">(<a href="#readme-top">返回顶部</a>)</p>
+python installer.py
+# or python3
+python3 installer.py
+```
+根据提示打开在线安装网页并完成安装
 
 ## 协议
 
