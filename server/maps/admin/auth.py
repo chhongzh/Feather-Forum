@@ -7,7 +7,7 @@ from lib.request import request_parse
 from lib.code import Code
 from lib import share
 from lib.authkey import validate_super
-from time import time
+from time import sleep, time
 from lib.database import query
 # ---------------------------------------------------------------------------
 

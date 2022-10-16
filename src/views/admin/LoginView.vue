@@ -5,7 +5,7 @@
             <div class="b"></div>
             <el-input size="large" v-model="p" placeholder="Password" type="password" clearable></el-input>
             <div class="b"></div>
-            <el-button size="large" @click="login" type="primary">登录</el-button>
+            <el-button size="large" @click="login" :loading="lockstate.login" type="primary">登录</el-button>
         </el-card>
     </el-row>
 
@@ -16,7 +16,10 @@ export default {
     data() {
         return {
             n: '',
-            p: ''
+            p: '',
+            lockstate: {
+                login: false
+            }
         }
     },
     mounted() {
@@ -27,14 +30,17 @@ export default {
     },
     methods: {
         login() {
+            this.lockstate.login = true
             this.$http.post('/api/admin/login', { name: this.n, pw: this.p }).then((res) => {
                 res = res.data
                 if (res.code == 200) {
                     this.$message.success('鉴权成功');
                     this.$store.commit('admin', true, res.data.authkey)
                     this.$router.push('/admin')
+                    this.lockstate.login = false
                 } else {
                     this.$message.error(res.msg)
+                    this.lockstate.login = false
                 }
             })
         }
