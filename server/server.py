@@ -1,15 +1,18 @@
 # ---------------------------------------------------------------------------
-from maps import post
-from maps import user
-from maps import other
-from maps import admin
+from routes import post
+from routes import user
+from routes import other
+from routes import admin
 from lib import cors
 from sys import version
 from lib import share
 from lib.config import Config
 from flask import Flask
 from lib.error import ApiNotFound
+from lib.utils import checkVersion
+assert checkVersion()  # Not Python 3.9.5 or lower
 # ---------------------------------------------------------------------------
+
 
 # ---------------------------------------------------------------------------
 app = Flask(__name__)
