@@ -27,6 +27,9 @@
                     <el-button-group>
                         <el-button @click="shareWithMail">邮箱</el-button>
                         <el-button @click="shareWithLink">链接</el-button>
+                        <el-input v-model="input1" placeholder="Please input">
+                            <template #prepend>Http://</template>
+                        </el-input>
                     </el-button-group>
                 </el-popover>
             </el-row>
@@ -66,32 +69,33 @@ export default {
                     localStorage.removeItem('authkey')
                     this.$router.push("/login")
                 }
-
             })
-
         }
         if (isNaN(this.$route.params.pid)) {
             this.$message.error('非法帖子id');
             this.$router.push('/')
         }
-        if (typeof (window.localStorage.getItem('cacheOBJpid')) != undefined && window.localStorage.getItem('cacheOBJpid') == this.$route.params.pid) {
-            this.postTitle = window.localStorage.getItem('cacheOBJtitle')
-            this.postAuther = window.localStorage.getItem('cacheOBJauther')
-            this.postContent = window.localStorage.getItem('cacheOBJcontent')
-            this.postTime = window.localStorage.getItem('cacheOBJtime')
-            this.postUid = window.localStorage.getItem('cacheOBJuid')
+        if ((this.$store.state.post.pid != 0) && this.$store.state.post.pid == this.$route.params.pid) {
+            this.postTitle = this.$store.state.post.title
+            this.postAuther = this.$store.state.post.auth
+            this.postContent = this.$store.state.post.content
+            this.postTime = this.$store.state.post.time
+            this.postUid = this.$store.state.post.uid
         } else {
             this.$http.post('/api/post/read', {
                 authkey: localStorage.getItem('authkey'),
                 pid: this.$route.params.pid
             }).then((res) => {
                 if (res.data.code = 200) {
-                    window.localStorage.setItem('cacheOBJpid', this.$route.params.pid)
-                    window.localStorage.setItem('cacheOBJtitle', res.data.data.title)
-                    window.localStorage.setItem('cacheOBJauther', res.data.data.name)
-                    window.localStorage.setItem('cacheOBJcontent', res.data.data.content)
-                    window.localStorage.setItem('cacheOBJtime', transformTime(res.data.data.time * 1000))
-                    window.localStorage.setItem('cacheOBJuid', res.data.data.uid)
+                    this.$store.commit('setpost', {
+                        pid: this.$route.params.pid,
+                        content: res.data.data.content,
+                        title: res.data.data.title,
+                        auth: res.data.data.name,
+                        time: res.data.data.time,
+                        uid: res.data.data.uid,
+                    })
+                    // console.log(this.$store.state)
                     this.postTitle = res.data.data.title
                     this.postAuther = res.data.data.name
                     this.postContent = res.data.data.content

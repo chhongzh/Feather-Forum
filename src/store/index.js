@@ -9,6 +9,14 @@ export default createStore({
       authkey: "",
       last: 0,
     },
+    post: {
+      pid: 0,
+      content: "",
+      title: "",
+      auth: "",
+      time: 0,
+      uid: 0,
+    },
   },
   getters: {},
   mutations: {
@@ -27,6 +35,9 @@ export default createStore({
         state.admin.authkey = authkey;
         state.admin.last = new Date().getTime() / 1000;
       }
+    },
+    setpost(state, c) {
+      state.post = c;
     },
   },
   actions: {},
