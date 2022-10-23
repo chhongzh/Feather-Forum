@@ -56,21 +56,20 @@ if (a):
     with open('./package.json', 'w') as f:
         dump(data, f, ensure_ascii=False)
     print('--------------------------------生成commit:--------------------------------')
-    commit = f"""版本:v{name}
-此版本由'版本构建机器人'构建于:{time.asctime( time.localtime(time.time()) )}"""
+    commit = f"""版本:v{name}发布于:{time.asctime( time.localtime(time.time()) )}"""
     print(commit)
     print('---------------------------------------------------------------------------')
 
-    print('打包文件')
-    mkdir('build')
-    os.chdir('build')
+    # print('打包文件')
+    # mkdir('build')
+    # os.chdir('build')
 
-    try:
-        os.rename('latest.zip', "{}.zip".format(old))
-    except:
-        pass
-    makezip('latest', '../')
-    os.chdir('../')
+    # try:
+    #     os.rename('latest.zip', "{}.zip".format(old))
+    # except:
+    #     pass
+    # makezip('latest', '../')
+    # os.chdir('../')
 
     print('执行提交Commit...')
     repo = git.Repo.init('.')
@@ -82,7 +81,7 @@ if (a):
         repo.index.add(['package.json', 'build/latest.zip'])
         # print('1')
     repo.index.commit(commit)
-    repo.create_tag('v'+name+'_BOT')
-    repo.remote().push()
-    print('推送至远程服务器成功!')
+    repo.create_tag('v'+name)
+    # repo.remote().push()
+    print('请手动推送到远程服务器!')
     print('Done!')
