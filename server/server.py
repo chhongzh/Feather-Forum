@@ -1,3 +1,4 @@
+
 # ---------------------------------------------------------------------------
 from routes import post
 from routes import user
@@ -10,9 +11,11 @@ from lib.config import Config
 from flask import Flask
 from lib.error import ApiNotFound
 from lib.utils import checkVersion
+from os import chdir
+from os.path import split
+from sys import argv
 assert checkVersion()  # Not Python 3.9.5 or lower
 # ---------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------
 app = Flask(__name__)
@@ -40,6 +43,7 @@ if (Config.UseDebugMode):
     log.warning('若要关闭Debug模式,请前往lib/config.py更改!')
     log.warning('!----------------------!')
 # ---------------------------------------------------------------------------
+
 
 # ---------------------------------------------------------------------------
 if (Config.Host):
