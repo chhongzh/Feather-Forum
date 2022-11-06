@@ -19,7 +19,7 @@
                 </el-input>
                 <p class="alert">{{ d }}</p>
                 <div class="space"></div>
-                <el-button type="primary" @click="submit()" size="large">提交</el-button>
+                <el-button type="primary" :loading="loading" @click="submit()" size="large">提交</el-button>
             </el-card>
         </el-row>
     </div>
@@ -36,12 +36,14 @@ export default {
             pw: "",
             pw1: "",
             email: "",
-            nm: ""
+            nm: "",
+            loading: false // 多次提交 防抖 issues#3
         }
     },
     methods: {
         submit() {
             if (this.checkName() && this.checkPw() && this.checkEmail() && this.checkPw1()) {
+                this.loading = true
                 this.$http.post("/api/user/register", {
                     name: this.nm,
                     pw: this.pw,
@@ -53,12 +55,14 @@ export default {
                         this.pw = ""
                         this.pw1 = ""
                         this.email = ""
+                        this.loading = false
                     } else {
                         this.$message.success(request.data.msg)
                         this.$router.push("/login")
-
+                        this.loading = false
                     }
                 }).catch((error) => {
+                    this.loading = false
                     console.log(error)
                 })
             }
