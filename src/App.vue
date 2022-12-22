@@ -75,7 +75,7 @@
     <span>你确定要重新加载吗？<br>未保存的数据将会丢失!</span>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="unreload">取消</el-button>
+        <el-button @click="changeReload">取消</el-button>
         <el-button type="primary" @click="reload">重新加载</el-button>
       </span>
     </template>
@@ -96,7 +96,6 @@ export default {
       switchModel: '',
       userAgent: '',
       forumName: config.forumName,
-      logon: false,
       uname: '',
       hideFeather: false,
       reloadDialog: false,
@@ -153,29 +152,7 @@ export default {
     reload() {
       this.changeReload()
       window.location.reload()
-    },
-    unreload() {
-      this.changeReload()
-    },
-
-    checkNameLogin() {
-      if (this.nm == "") {
-        this.a = "填写此字段"
-        return false
-      }
-      this.a = ""
-
-      return true
-    },
-    checkPwLogin() {
-      if (this.pw == "") {
-        this.b = "填写此字段"
-        return false
-      }
-      this.b = ""
-
-      return true
-    },
+    }
   },
 }
 </script>
