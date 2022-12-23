@@ -86,3 +86,5 @@ app.use(VueAxios, Axios);
 app.use(VMdEditor);
 
 app.mount("#app");
+
+export default app;

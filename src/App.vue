@@ -84,6 +84,8 @@
 
 <script setup>
 import { useTitle } from '@vueuse/core'
+import { isAuthkeyALive } from './lib/auth';
+import { get } from '@/lib/http.js'
 </script>
 
 <script>
@@ -93,14 +95,10 @@ export default {
     return {
       year: 1970,
       weblink: '',
-      switchModel: '',
       userAgent: '',
       forumName: config.forumName,
-      uname: '',
       hideFeather: false,
       reloadDialog: false,
-      loginDialog: true,
-      registerDialog: false
     }
   },
   mounted() {
@@ -110,25 +108,22 @@ export default {
       this.weblink = config.webhost
     }
 
-    var a = new Date()
     this.hideFeather = config.hideFeather
-    this.year = a.getFullYear()
+    this.year = new Date().getFullYear()
     this.userAgent = navigator.appName + ' ' + navigator.appCodeName + ' ' + navigator.appVersion
     var ak = localStorage.getItem('authkey')
-    if (ak) {
-      this.$http.post("/api/user/info", {
-        authkey: ak
-      }).then((res) => {
-        if (res.data.data.authkey) {
+    if (ak) { // 判断是否存在
+      isAuthkeyALive(ak).then((res) => {
+        if (res.data.authkey) {
           this.logon = true
-          this.uname = res.data.data.name
+          this.uname = res.data.name
           this.$store.commit('login')
-          this.$store.commit('name', res.data.data.name)
+          this.$store.commit('name', res.data.name)
+          localStorage.setItem('authkey', ak)
         } else {
           localStorage.removeItem('authkey')
           this.$store.commit('logout')
           this.$store.commit('name', '')
-
         }
       })
     }
