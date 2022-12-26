@@ -1,31 +1,27 @@
-# ---------------------------------------------------------------------------
+
 from math import ceil
 from flask import Blueprint, request
-from lib.request import buildRequest
+from lib.request import build_request
 from lib.request import request_parse
-from lib.code import Code
+from lib.code import ReturnCode
 from time import time
-from lib.database import getConfigByKey
+from lib.database import get_config_by_key
 from lib import share
-from lib.authkey import validate_authkey
+from lib.authkey import get_user_by_authkey
 from lib.database import query
-from lib.user import getNameByUid
+from lib.user import get_name_by_uid
 from re import findall, search, sub
-# ---------------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------
+
 lock = share.lock
 c = share.c
 conn = share.conn
 log = share.log
-# ---------------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------
+
 blueprint = Blueprint('post', __name__, url_prefix='/api/post')
-# ---------------------------------------------------------------------------
 
 
-# ---------------------------------------------------------------------------
 @blueprint.route("/write", methods=["POST"])
 def WritePost():
     data = request_parse(request)
@@ -33,8 +29,8 @@ def WritePost():
     title = data.get('title')
     content = str(data.get('content'))
     if (data is None or title is None or content is None):
-        return buildRequest(Code.REQUEST_BAD_QUERY, "缺省参数")
-    ak = validate_authkey(authkey)
+        return build_request(ReturnCode.REQUEST_BAD_QUERY, "缺省参数")
+    ak = get_user_by_authkey(authkey)
     if (ak):
         uid = ak["uid"]
         ttime = int(time())
@@ -44,37 +40,31 @@ def WritePost():
             """, (title, content, uid, ttime))
         conn.commit()
 
-        return buildRequest(Code.REQUEST_OK, "帖子发布成功")
+        return build_request(ReturnCode.REQUEST_OK, "帖子发布成功")
     else:
-        return buildRequest(Code.REQUEST_BAD_AUTHKEY, "无法验证authkey")
-# ---------------------------------------------------------------------------
-
-
-# ---------------------------------------------------------------------------
+        return build_request(ReturnCode.REQUEST_BAD_AUTHKEY, "无法验证authkey")
 
 
 @blueprint.route('/read', methods=["POST"])
 def PostRead():
     data = request_parse(request)
     if (data.get('authkey') is None or data.get('pid') is None):
-        return buildRequest(Code.REQUEST_BAD_QUERY, "参数缺少")
+        return build_request(ReturnCode.REQUEST_BAD_QUERY, "参数缺少")
     if (not str(data.get('pid')).isdigit()):
-        return buildRequest(Code.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
+        return build_request(ReturnCode.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
     pid = data.get('pid')
     post = query(
         "SELECT title,content,uid,time,pid FROM post WHERE pid=(?)", pid, one=True)
     if (not post):
-        return buildRequest(Code.REQUEST_BAD_QUERY, "帖子不存在")
+        return build_request(ReturnCode.REQUEST_BAD_QUERY, "帖子不存在")
     for title, link in findall(r"(?<!!)\[(.*?)\]\((.*?)\)", post['content']):
         new = "#/jump?url={}".format(link)
         post['content'] = post['content'].replace("[{}]({})".format(title, link),
                                                   "[{}]({}&redirect=/post/{})".format(title, new, pid), 1)
-    name = getNameByUid(post['uid'])
-    return buildRequest(Code.REQUEST_OK, "查询成功", title=post['title'], content=post['content'], time=post['time'], name=name, uid=post['uid'])
-# ---------------------------------------------------------------------------
+    name = get_name_by_uid(post['uid'])
+    return build_request(ReturnCode.REQUEST_OK, "查询成功", title=post['title'], content=post['content'], time=post['time'], name=name, uid=post['uid'])
 
 
-# ---------------------------------------------------------------------------
 @blueprint.route('/top')
 def PostTop():
     obj = []
@@ -90,20 +80,18 @@ def PostTop():
             })
             obj.append(obj1)
         lock.release()
-        return buildRequest(Code.REQUEST_OK, "查询成功", list=obj)
-# ---------------------------------------------------------------------------
+        return build_request(ReturnCode.REQUEST_OK, "查询成功", list=obj)
 
 
-# ---------------------------------------------------------------------------
 @blueprint.route("/list", methods=["GET"])
 def ListPost():
     data = request_parse(request)
-    p = int(getConfigByKey('itemLimit'))
+    p = int(get_config_by_key('itemLimit'))
     page = p * \
         data.get('page', default=0, type=int)
     obj = []
     for v in query("SELECT * FROM post ORDER BY \"time\" DESC LIMIT (?) OFFSET (?)", [p, page]):
-        v['name'] = getNameByUid(v['uid'])
+        v['name'] = get_name_by_uid(v['uid'])
         v['content'] = v['content'].replace('#', '').replace(
             ':', ''
         ).replace('|', ''
@@ -115,18 +103,14 @@ def ListPost():
                                                                     ).replace('~~', ''
                                                                               )[:50]
         obj.append(v)
-    return buildRequest(Code.REQUEST_OK, "查询成功", list=obj)
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
+    return build_request(ReturnCode.REQUEST_OK, "查询成功", list=obj)
 
 
 @blueprint.route("/page")
 def PageUser():
     total = 0
     total = query('SELECT count(*) FROM post', one=True)['count(*)']
-    page = int(getConfigByKey('itemLimit'))
+    page = int(get_config_by_key('itemLimit'))
     total = ceil(total/page)
 
-    return buildRequest(Code.REQUEST_OK, msg="查询成功", page=total-1)
-# ---------------------------------------------------------------------------
+    return build_request(ReturnCode.REQUEST_OK, msg="查询成功", page=total-1)

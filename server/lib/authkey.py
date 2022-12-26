@@ -1,35 +1,46 @@
-# ---------------------------------------------------------------------------
-from lib.database import getConfigByKey
-from lib import share
-from lib.utils import isSpecil
+"""
+此文件属于Feather-Forum!
+© 2022 chhongzh
+
+authkey相关操作
+"""
+
+from .database import get_config_by_key
+from . import share
+from .utils import is_in
 from time import time
-from lib.database import query
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
-lock = share.lock
-log = share.log
-c = share.c
-# ---------------------------------------------------------------------------
+from .database import query
 
 
-# ---------------------------------------------------------------------------
-def validate_authkey(authkey: str) -> None | dict:
-    """参数:
-        authkey:用于验证的authkey
-    返回:
-        如果authkey有效:
-            返回信息
-        如果无效:
-            返回None"""
+def get_user_by_authkey(authkey: str) -> None | dict:
+    """获取一个Authkey的相关信息
+
+    Args:
+        authkey: 需要查询的Authkey
+
+    Returns:
+        如果Authkey不存在或者过期,返回None
+        否则返回对应的数据
+        Example:
+            {
+             "name": "Test",
+             "uid": 1,
+             "email": "test@test.com",
+             "coin": 0,
+             "regtime": 114514,
+             "last": 19810,
+             "avartar": "Nothing.",
+             "uuid": "1234-1324-1234-1234-1324"
+             }
+    """
     obj = {}
     if (len(authkey) > 36 or
             len(authkey) < 36 or
             '-' not in authkey or
-            isSpecil(authkey)
+            is_in(authkey)
         ):
         return None
-    ak = int(getConfigByKey('authKeyTime'))
+    ak = int(get_config_by_key('authKeyTime'))
     q = query("""SELECT * FROM user WHERE "authkey"=(?)""",
               [authkey], one=True)
     if (q is None):
@@ -48,21 +59,27 @@ def validate_authkey(authkey: str) -> None | dict:
     else:
         obj = None
     return obj
-# ---------------------------------------------------------------------------
 
 
-# ---------------------------------------------------------------------------
-def validate_super(authkey: str) -> None | dict:
+def get_superuser_by_authkey(authkey: str) -> None | dict:
+    """获取超级用户的信息
+
+    Args:
+        authkey: 查询的Authkey
+
+    Returns:
+        如果Authkey不存在或者过期,返回None
+        否则返回对应的数据
+    """
     if (len(authkey) > 36 or
             len(authkey) < 36 or
             '-' not in authkey or
-            isSpecil(authkey)
+            is_in(authkey)
         ):
         return None
-    ak = int(getConfigByKey('authKeyTime'))
+    ak = int(get_config_by_key('authKeyTime'))
     q = query("""SELECT * FROM admin WHERE "authkey"=(?)""",
               [authkey], one=True)
     if ((q is None) or (not time() < q['last']+ak)):
         return None
     return q
-# ---------------------------------------------------------------------------
