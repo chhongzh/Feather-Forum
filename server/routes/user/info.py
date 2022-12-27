@@ -2,7 +2,7 @@
 from flask import Blueprint, request
 from lib.request import build_request
 from lib.request import request_parse
-from lib.code import ReturnCode
+from lib.returncode import ReturnCode
 from lib import share
 from lib.authkey import get_user_by_authkey
 from lib.database import query

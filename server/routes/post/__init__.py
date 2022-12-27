@@ -3,7 +3,7 @@ from math import ceil
 from flask import Blueprint, request
 from lib.request import build_request
 from lib.request import request_parse
-from lib.code import ReturnCode
+from lib.returncode import ReturnCode
 from time import time
 from lib.database import get_config_by_key
 from lib import share

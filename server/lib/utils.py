@@ -1,8 +1,8 @@
 """
-此库属于Feather-Forum!
+此文件属于Feather-Forum!
 © 2022 chhongzh
 
-authkey相关操作
+实用工具
 """
 import sys
 from . import share
@@ -27,5 +27,14 @@ def is_in(string: str, specil: str = "!@#$%^&*()+_|\\[]{}:;\"\'?/>.<,") -> bool:
 
 
 def check_version(target=(3, 9, 6)) -> bool:
+    """判断是否存在于string
+
+    Args:
+        string: 需查询的字符串
+        specil: 需查询的字符串
+
+    Returns:
+        True/False
+    """
     return (sys.version_info.major, sys.version_info.minor,
             sys.version_info.micro) >= target
