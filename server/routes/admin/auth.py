@@ -27,7 +27,7 @@ blueprint = Blueprint('adminauth', __name__)
 
 
 @blueprint.route("/login", methods=["POST"])
-def login():
+def Login():
     data = request_parse(request)
     if (data.get('name', None) is None or
                 data.get('pw', None) is None
