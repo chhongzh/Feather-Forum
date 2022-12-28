@@ -64,6 +64,17 @@
         </el-col>
       </el-row>
       <div class="foot-layout-right">
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            语言
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="$i18n.locale = 'cn'">简体中文</el-dropdown-item>
+              <el-dropdown-item @click="$i18n.locale = 'en'">English</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <p>
           <el-link type="primary" @click="changeReload">{{ $t('message.reload') }}</el-link>
         </p>
@@ -99,9 +110,6 @@ export default {
     }
   },
   mounted() {
-    // console.log(JSON.stringify(cn))
-    console.log(JSON.parse('{"back": "返回", "backHome": "返回主页", "cancel": "取消", "continueTo": "继续前往", "copyright": "版权所有", "dataLoss": "未保存的数据将会丢失!", "fillThis": "填写此字段", "jumpTip": "跳转提示", "logged": "你已经登陆过了!", "login": "登录", "loginError": "登录失败,请检查网络连接!", "logout": "登出", "logoutDone": "登出成功", "missingArg": "参数缺失", "networkError": "网络错误", "newBlankAndBack": "在新标签页打开并返回", "newMembers": "新成员", "newPost": "新帖子", "noAccount": "没有账号?点我注册!", "noData": "没有数据", "notBelong": "不属于", "notFoundCheckUrl": "检查您是否拼错URL?", "notFoundTitle": "未找到您访问的路由记录", "notLogin": "未登录", "password": "密码", "plzLogin": "访客,请先登录", "post": "帖子", "postList": "帖子列表", "postTitle": "帖子标题", "register": "注册", "reload": "重新加载", "submit": "提交", "sureReload": "你确定重新加载吗?", "user": "用户", "userList": "用户列表", "username": "用户名"}'))
-
     if (config.webHost == 'auto') {
       this.weblink = window.location.hostname
     } else {
