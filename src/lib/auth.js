@@ -1,18 +1,30 @@
 import { get, post } from "@/lib/http";
+import apiRoute from "@/config/apiRoute";
 
-const isAuthkeyALive = async (authkey) => {
-  //   await post("/api/user/info", { authkey: authkey }).then((res) => {
-  //     if (res.code == 200) {
-  //       return res.data;
-  //     } else {
-  //       return undefined;
-  //     }
-  //   });
-  return post("/api/user/info", { authkey: authkey });
-  if (test.data.code == 200) {
-    return test.data;
-  }
-  return undefined;
+/**
+ * 获取Authkey信息
+ * @param {string} authkey 需要查询的Authkey
+ * @returns
+ */
+const getAuthkeyInfo = (authkey) => {
+  return post(apiRoute.api_user_info, { authkey: authkey });
 };
 
-export { isAuthkeyALive };
+/**
+ * 验证Authkey是否有效
+ * @param {string} authkey 需要查询的Authkey
+ * @returns
+ */
+const validateAuthkey = (authkey) => {
+  return post(apiRoute.api_authkey_v, { authkey: authkey });
+};
+
+/**
+ * 获取本地的Authkey
+ * @returns 返回获取的Authkey
+ */
+const getLocalAuthkey = () => {
+  return globalThis.localStorage.getItem("authkey");
+};
+
+export { getAuthkeyInfo, validateAuthkey, getLocalAuthkey };

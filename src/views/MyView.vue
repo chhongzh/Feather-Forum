@@ -3,7 +3,7 @@
         <template #header>
             <h1>{{ uname }}</h1>
         </template>
-        <el-button @click="logout" type="primary">登出</el-button>
+        <el-button @click="logout" type="primary">{{ $t('message.logout') }}</el-button>
     </el-card>
 </template>
 
@@ -24,12 +24,12 @@ export default {
                     this.uname = res.data.data.name
                 } else {
                     localStorage.removeItem('authkey')
-                    this.$message.error('未登录');
+                    this.$message.error(this.$t('message.nogLogin'));
                     this.$router.push('/')
                 }
             })
         } else {
-            this.$message.error('未登录');
+            this.$message.error(this.$t('message.nogLogin'));
             this.$store.commit('logout')
             this.$router.push('/')
         }
@@ -37,7 +37,7 @@ export default {
     methods: {
         logout() {
             window.localStorage.removeItem('authkey')
-            this.$message.success('登出成功');
+            this.$message.success(this.$t('message.logoutDone'));
             this.$store.commit('name', '')
             this.$store.commit('logout')
             this.$router.push('/login')
@@ -47,4 +47,5 @@ export default {
 </script>
 
 <style>
+
 </style>

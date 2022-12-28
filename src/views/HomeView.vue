@@ -3,12 +3,12 @@
     <div>
       <transition name="el-fade-in-linear">
         <el-card v-show="allDone">
-          <template #header><b>{{ forum }}</b></template>
+          <template #header><b>{{ config.forumName }}</b></template>
           <div>
             <el-row>
               <el-col :span="12">
-                <el-card header="新成员">
-                  <el-empty v-show="mems.length <= 0" description="没有数据"></el-empty>
+                <el-card :header="$t('message.newMembers')">
+                  <el-empty v-show="mems.length <= 0" :description="$t('message.noData')"></el-empty>
                   <div v-for="mem in mems" :key="mem">
                     <router-link :to='`/user/${mem.uid}`'>
                       <el-link>
@@ -19,8 +19,8 @@
                 </el-card>
               </el-col>
               <el-col :span="12">
-                <el-card header="新帖子">
-                  <el-empty v-show="psts.length <= 0" description="没有数据"></el-empty>
+                <el-card :header="$t('message.newPost')">
+                  <el-empty v-show="psts.length <= 0" :description="$t('message.noData')"></el-empty>
                   <div v-for="pst in psts" :key="pst">
                     <router-link :to='`/post/${pst.pid}`'>
                       <el-link>
@@ -38,17 +38,18 @@
   </div>
 </template>
 
+<script setup>
+import config from '@/config/web'
+</script>
+
 <script>
-import config from '../assets/js/config.js'
 export default {
   data() {
     return {
-      members: 0,
       mems: {},
       psts: {},
       post: "",
       temp: "",
-      forum: '',
       allDone: false
     }
   },
@@ -59,13 +60,12 @@ export default {
         this.psts = req.data.data.list
         this.allDone = true
       }).catch((req) => {
-        this.$message.error('网络错误');
+        this.$message.error(this.$t('message.networkError'));
       })
     }).catch((req) => {
-      this.$message.error('网络错误');
+      this.$message.error(this.$t('message.networkError'));
     })
 
-    this.forum = config.forumName
   }
 
 }

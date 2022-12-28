@@ -1,5 +1,6 @@
 <template>
-    <el-input v-model="postTitle" placeholder="帖子标题" size="large" minlength="3" maxlength="50" show-word-limit>
+    <el-input v-model="postTitle" :placeholder="$t('message.postTitle')" size="large" minlength="3" maxlength="50"
+        show-word-limit>
     </el-input>
     <p class="alert">{{ a }}</p>
     <div class="foot-space"></div>
@@ -8,7 +9,7 @@
         v-model="markdown" height="400px">
     </v-md-editor>
     <div class="foot-space"></div>
-    <el-button @click="post()" type="primary">提交</el-button>
+    <el-button @click="post()" type="primary">{{ $t('message.submit') }}</el-button>
 </template>
 
 <script>
@@ -29,7 +30,7 @@ export default {
                 authkey: ak
             }).then((res) => {
                 if (!res.data.data.authkey) {
-                    this.$message.error('未登录或登录过期,请重新登陆');
+                    this.$message.error(this.$t('message.loginFail'));
                     localStorage.removeItem('authkey')
                     this.$router.push("/login")
                 }

@@ -1,19 +1,20 @@
 <template>
     <div>
         <el-row type="flex" justify="center">
-            <el-card header="登录" class="login-box">
-                <el-input @blur="checkName()" v-model="nm" size="large" placeholder="用户名"></el-input>
-                <p class="alert">{{ a }}</p>
+            <el-card :header="$t('message.login')" class="login-box">
+                <el-input @blur="checkName()" v-model="nm" size="large"
+                    :placeholder="$t('message.username')"></el-input>
+                <p class="alert">{{ nameMessage }}</p>
                 <div class="space"></div>
                 <el-input @blur="checkPw()" type="password" v-model="pw" size="large" clearable show-password
-                    placeholder="密码">
+                    :placeholder="$t('message.password')">
                 </el-input>
-                <p class="alert">{{ b }}</p>
+                <p class="alert">{{ passwordMessage }}</p>
                 <div class="space"></div>
-                <el-button type="primary" @click="submit()" size="large">提交</el-button>
+                <el-button type="primary" @click="submit()" size="large">{{ $t('message.submit') }}</el-button>
                 <div class="space"></div>
                 <router-link to="/register">
-                    <el-link>没有账号?点我注册!</el-link>
+                    <el-link>{{ $t('message.noAccount') }}</el-link>
                 </router-link>
             </el-card>
         </el-row>
@@ -21,25 +22,24 @@
 </template>
 
 <script>
+import { validateAuthkey, getLocalAuthkey } from '@/lib/auth'
 
 export default {
     data() {
         return {
-            a: "",
-            b: "",
+            nameMessage: "",
+            passwordMessage: "",
             pw: "",
             nm: ""
         }
     },
     mounted() {
-        var ak = localStorage.getItem('authkey')
+        var ak = getLocalAuthkey();
         if (ak) {
-            this.$http.post("/api/authkey/v", {
-                authkey: ak
-            }).then((res) => {
-                if (res.data.data.authkey) {
-                    this.$message.error("你已经登录过啦!")
-                    this.$router.push("/")
+            validateAuthkey(ak).then((res) => {
+                if (res.data.authkey) {
+                    this.$message.error(this.$t('message.logged'))
+                    this.$router.push('/')
                 }
             })
         }
@@ -64,25 +64,25 @@ export default {
                         this.$router.push("/")
                     }
                 }).catch((error) => {
-                    this.$message.error("登录失败,请检查网络连接!")
+                    this.$message.error(this.$t("message.loginError"))
                 })
             }
         },
         checkName() {
             if (this.nm == "") {
-                this.a = "填写此字段"
+                this.nameMessage = this.$t('message.fillThis')
                 return false
             }
-            this.a = ""
+            this.nameMessage = ""
 
             return true
         },
         checkPw() {
             if (this.pw == "") {
-                this.b = "填写此字段"
+                this.passwordMessage = this.$t('message.fillThis')
                 return false
             }
-            this.b = ""
+            this.passwordMessage = ""
 
             return true
         }

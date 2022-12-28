@@ -1,7 +1,7 @@
 <template>
     <el-card>
-        <template #header><b>帖子列表</b></template>
-        <el-empty v-show="posts.length <= 0" description="没有数据">
+        <template #header><b>{{ $t('message.postList') }}</b></template>
+        <el-empty v-show="posts.length <= 0" :description="$t('message.noData')">
 
         </el-empty>
         <div v-for="(pst, index) in posts" :key="index">
@@ -11,13 +11,13 @@
                         <el-link>{{ pst.title }}</el-link>
                     </router-link>
                 </template>
-                {{pst.content}}
+                {{ pst.content }}
                 <el-divider></el-divider>
-                用户:
+                {{ $t('message.user') }}:
                 <router-link :to="`/user/${pst.uid}`">
-                    <el-link>{{pst.name}}</el-link>
+                    <el-link>{{ pst.name }}</el-link>
                 </router-link>
-                发布于:{{pst.time}}
+                {{ $t('message.sendin') }}:{{ trans(pst.time * 1000) }}
             </el-card>
             <div class="foot-space"></div>
         </div>
@@ -55,6 +55,9 @@ export default {
                 .catch((res) => {
                     this.$message.error(res);
                 })
+        },
+        trans(a) {
+            return transformTime(a)
         }
     }
 

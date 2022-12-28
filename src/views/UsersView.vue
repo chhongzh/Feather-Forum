@@ -1,7 +1,7 @@
 <template>
     <el-card v-loading="isLoading">
-        <template #header><b>用户列表</b></template>
-        <el-empty v-show="mems.length <= 0" description="没有数据">
+        <template #header><b>{{ $t('message.userList') }}</b></template>
+        <el-empty v-show="mems.length <= 0" :description="$t('message.noData')">
 
         </el-empty>
         <div v-for="(mem, index) in mems" :key="index">

@@ -1,25 +1,28 @@
 <template>
     <div>
         <el-row type="flex" justify="center">
-            <el-card class="login-box" header="注册">
-                <el-input @blur="checkName()" v-model="nm" clearable size="large" placeholder="用户名"></el-input>
+            <el-card class="login-box" :header="$t('message.register')">
+                <el-input @blur="checkName()" v-model="nm" clearable size="large"
+                    :placeholder="$t('message.username')"></el-input>
                 <p class="alert">{{ a }}</p>
                 <div class="space"></div>
                 <el-input @blur="checkPw()" type="password" v-model="pw" size="large" clearable show-password
-                    placeholder="密码">
+                    :placeholder="$t('message.password')">
                 </el-input>
                 <p class="alert">{{ b }}</p>
                 <div class="space"></div>
                 <el-input @blur="checkPw1()" type="password" v-model="pw1" size="large" clearable show-password
-                    placeholder="确认密码">
+                    :placeholder="$t('message.checkPassword')">
                 </el-input>
                 <p class="alert">{{ c }}</p>
                 <div class="space"></div>
-                <el-input @blur="checkEmail()" type="email" v-model="email" size="large" clearable placeholder="邮箱">
+                <el-input @blur="checkEmail()" type="email" v-model="email" size="large" clearable
+                    :placeholder="$t('message.email')">
                 </el-input>
                 <p class="alert">{{ d }}</p>
                 <div class="space"></div>
-                <el-button type="primary" :loading="loading" @click="submit()" size="large">提交</el-button>
+                <el-button type="primary" :loading="loading" @click="submit()" size="large">{{ $t('message.submit')
+                    }}</el-button>
             </el-card>
         </el-row>
     </div>
@@ -69,7 +72,7 @@ export default {
         },
         checkName() {
             if (this.nm == "") {
-                this.a = "填写此字段"
+                this.a = this.$t('message.fillThis')
                 return false
             }
             this.a = ""
@@ -78,7 +81,7 @@ export default {
         },
         checkPw() {
             if (this.pw == "") {
-                this.b = "填写此字段"
+                this.b = this.$t('message.fillThis')
                 return false
             }
             this.b = ""
@@ -87,11 +90,11 @@ export default {
         },
         checkPw1() {
             if (this.pw == "") {
-                this.c = "填写此字段"
+                this.c = this.$t('message.fillThis')
                 return false
             }
             if (this.pw != this.pw1) {
-                this.c = "无法验证您的密码,请重试"
+                this.c = this.$t('message.notValidate')
                 return false
             }
             this.c = ""
@@ -99,7 +102,7 @@ export default {
             return true
         }, checkEmail() {
             if (this.email == "") {
-                this.d = "填写此字段"
+                this.d = this.$t('message.fillThis')
                 return false
             }
             this.d = ""
@@ -114,7 +117,7 @@ export default {
                 authkey: ak
             }).then((res) => {
                 if (res.data.data.authkey) {
-                    this.$message.error("你已经登录过啦!")
+                    this.$message.error(this.$t('message.logged'))
                     this.$router.push("/")
                 }
             })

@@ -1,10 +1,11 @@
 <template>
     <el-row type="flex" justify="center">
-        <el-card header="跳转提示" style="width:80%">
-            <p><b>{{$route.query.url}}</b>不属于{{forum}},继续前往?</p>
+        <el-card :header="$t('message.jumpTip')" style="width:80%">
+            <p><b>{{ $route.query.url }}</b>{{ $t('message.notBelong') + forum + ',' + $t('message.continueTo') + '?' }}
+            </p>
             <div style="text-align: right;">
-                <el-button @click="b">返回</el-button>
-                <el-button @click="f">在新标签页打开并返回</el-button>
+                <el-button @click="b">{{ $t('message.back') }}</el-button>
+                <el-button @click="f">{{ $t('message.newBlankAndBack') }}</el-button>
             </div>
         </el-card>
     </el-row>
@@ -20,7 +21,7 @@ export default {
     },
     mounted() {
         if ((!this.$route.query.redirect) || (!this.$route.query.url)) {
-            this.$message.error('参数缺失');
+            this.$message.error(this.$t('message.missingArg'));
             this.$router.push('/')
         }
     },

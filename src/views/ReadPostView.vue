@@ -103,7 +103,7 @@ export default {
                     this.postTime = transformTime(this.postTime * 1000)
                 }
             }).catch((res) => {
-                this.$message.error('网络错误');
+                this.$message.error(this.$t('message.networkError'));
                 this.$router.push('/')
             })
         }

@@ -1,5 +1,5 @@
 import { createApp } from "vue";
-import App from "./Wrapper.vue";
+import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import ElementPlus from "element-plus";
@@ -46,6 +46,10 @@ import "@kangc/v-md-editor/lib/plugins/todo-list/todo-list.css";
 import createLineNumbertPlugin from "@kangc/v-md-editor/lib/plugins/line-number/index";
 import createAlignPlugin from "@kangc/v-md-editor/lib/plugins/align";
 
+// import { VueI18n } from "vue-i18n";
+import messages from "./i18n";
+import { createI18n } from "vue-i18n";
+
 VMdEditor.Codemirror = Codemirror;
 VMdEditor.use(githubTheme, {
   Hljs: hljs,
@@ -84,6 +88,12 @@ app.use(router);
 app.use(ElementPlus);
 app.use(VueAxios, Axios);
 app.use(VMdEditor);
+app.use(
+  createI18n({
+    locale: "cn",
+    messages: messages,
+  })
+);
 
 app.mount("#app");
 
