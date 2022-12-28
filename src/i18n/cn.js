@@ -42,6 +42,7 @@ const cn = {
   loginFail: "未登录或登录过期,请重新登陆",
   checkPassword: "确认密码",
   email: "邮箱",
+  notValidate: "无法验证您的密码,请重试",
 };
 
 export default cn;
