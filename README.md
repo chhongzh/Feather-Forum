@@ -1,3 +1,4 @@
+**My English is not very well, please use Chinese if you can. :)**
 **提示:目前正在开发中,如果您有什么好建议或问题提出,请创建issues**
 
 --------
@@ -57,8 +58,6 @@ python3 installer.py
 ## 协议
 
 根据MIT许可证发布,有关更多信息,请参见`LICENSE`。
-
-[赞助作者](https://afdian.net/a/1A2553E)
 
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 
