@@ -9,14 +9,14 @@
                     </el-icon>
                     <b>
                         <router-link style="color:var(--el-text-color-primary)" :to="`/user/${postUid}`">
-                            {{postAuther}}
+                            {{ postAuther }}
                         </router-link>
                     </b>
                     ·
                     <el-icon>
                         <Calendar />
                     </el-icon>
-                    <b>{{postTime}}</b>
+                    <b>{{ postTime }}</b>
                 </div>
                 <el-popover title="分享" placement="top">
                     <template #reference>
@@ -27,7 +27,7 @@
                     <el-button-group>
                         <el-button @click="shareWithMail">邮箱</el-button>
                         <el-button @click="shareWithLink">链接</el-button>
-                        <el-input v-model="input1" placeholder="Please input">
+                        <el-input v-model="aaaaa" placeholder="Please input">
                             <template #prepend>Http://</template>
                         </el-input>
                     </el-button-group>
@@ -56,6 +56,7 @@ export default {
             postTime: '',
             postContent: '',
             postUid: '',
+            aaaaa: ''
         }
     },
     mounted() {
@@ -79,7 +80,7 @@ export default {
             this.postTitle = this.$store.state.post.title
             this.postAuther = this.$store.state.post.auth
             this.postContent = this.$store.state.post.content
-            this.postTime = this.$store.state.post.time
+            this.postTime = transformTime(this.$store.state.post.time * 1000) // 修复 issues #5
             this.postUid = this.$store.state.post.uid
         } else {
             this.$http.post('/api/post/read', {
@@ -95,7 +96,6 @@ export default {
                         time: res.data.data.time,
                         uid: res.data.data.uid,
                     })
-                    // console.log(this.$store.state)
                     this.postTitle = res.data.data.title
                     this.postAuther = res.data.data.name
                     this.postContent = res.data.data.content
