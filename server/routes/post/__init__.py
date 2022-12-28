@@ -54,7 +54,7 @@ def PostRead():
         return build_request(ReturnCode.REQUEST_BAD_AUTHKEY, 'pid应为一个数字')
     pid = data.get('pid')
     post = query(
-        "SELECT title,content,uid,time,pid FROM post WHERE pid=(?)", pid, one=True)
+        "SELECT title,content,uid,time,pid FROM post WHERE pid=(?)", [pid], one=True)  # issues #4 无法打开帖子
     if (not post):
         return build_request(ReturnCode.REQUEST_BAD_QUERY, "帖子不存在")
     for title, link in findall(r"(?<!!)\[(.*?)\]\((.*?)\)", post['content']):
