@@ -24,12 +24,12 @@ export default {
                     this.uname = res.data.data.name
                 } else {
                     localStorage.removeItem('authkey')
-                    this.$message.error(this.$t('message.nogLogin'));
+                    this.$message.error(this.$t('message.noLogin'));
                     this.$router.push('/')
                 }
             })
         } else {
-            this.$message.error(this.$t('message.nogLogin'));
+            this.$message.error(this.$t('message.noLogin'));
             this.$store.commit('logout')
             this.$router.push('/')
         }
