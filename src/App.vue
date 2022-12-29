@@ -99,7 +99,7 @@ import { setWindowTitle } from '@/lib/utils'
 
 <script>
 import config from '@/config/web'
-import { ElNotification } from 'element-plus';
+import { getLocalAuthkey, delLocalAuthkey, setLocalAuthkey } from './lib/auth';
 import { makeNotification } from '@/lib/utils'
 export default {
   data() {
@@ -115,7 +115,7 @@ export default {
       this.weblink = config.webHost
     }
 
-    var ak = localStorage.getItem('authkey')
+    var ak = getLocalAuthkey()
     if (ak) { // 判断是否存在
       this.getAuthkeyInfo(ak).then((res) => { // 判断是否存活
         if (res.data.authkey) {
@@ -123,9 +123,9 @@ export default {
           this.uname = res.data.name
           this.$store.commit('login')
           this.$store.commit('name', res.data.name)
-          localStorage.setItem('authkey', ak)
+          setLocalAuthkey(ak)
         } else {
-          localStorage.removeItem('authkey')
+          delLocalAuthkey()
           this.$store.commit('logout')
           this.$store.commit('name', '')
         }
