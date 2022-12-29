@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { makeNotification } from '@/lib/utils'
 export default {
     data() {
         return {
@@ -60,7 +61,7 @@ export default {
                         this.email = ""
                         this.loading = false
                     } else {
-                        this.$message.success(request.data.msg)
+                        makeNotification(this.$t('message.registerDone'))
                         this.$router.push("/login")
                         this.loading = false
                     }

@@ -54,6 +54,7 @@ const en = {
     "We may need to notify permission to perform some services.",
   permissionBlock:
     "You have turned off the notification authority, and you may not receive messages in time.",
+  registerDone: "Your account has been register.",
 };
 
 export default en;
