@@ -81,6 +81,10 @@ export default {
             this.postUid = this.$store.state.post.uid
         } else {
             getPost(this.$route.params.pid, ak).then((res) => {
+                if (res.code != 200) {
+                    makeNotification('', '访问的帖子不存在')
+                    this.$router.push('/')
+                }
                 this.$store.commit('setpost', {
                     pid: this.$route.params.pid,
                     content: res.data.content,
