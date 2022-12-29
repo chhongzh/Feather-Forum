@@ -134,7 +134,15 @@ export default {
 
     setWindowTitle(config.forumName) // 设置Title
 
-    Notification.requestPermission((permission) => { }); // 申请权限
+    Notification.requestPermission((permission) => {
+      if (permission == 'denied') {
+        makeNotification(this.$t('message.permission'), this.$t('message.permissionBlock'))
+      } else if (permission == 'granted') {
+
+      } else {
+        makeNotification(this.$('message.permission'), this.$t('message.permissionDefault'))
+      }
+    }); // 申请权限
 
     addEventListener("visibilitychange", () => {
       if (document.hidden) {
@@ -190,13 +198,6 @@ export default {
      */
     switchLang(lang) {
       this.$i18n.locale = lang
-      // ElNotification(
-      //   {
-      //     'title': "你好",
-      //     "message": "asdf",
-      //     'position': 'bottom-left',
-      //   }
-      // )
       makeNotification(this.$t('message.langTip'), this.$t('message.langMessage'))
     }
   },
