@@ -44,7 +44,6 @@
     </el-main>
     <el-footer v-show="!$route.meta.hideFooter" class="little">
       <div class="foot-space"></div>
-      <b>{{ userAgent }}</b>
       <el-row>
         <el-col :span="8">
           <p v-if="!config.hideFeather">"<b>{{ config.forumName }}</b>" 由 "<b>
@@ -106,7 +105,6 @@ export default {
   data() {
     return {
       weblink: '',
-      userAgent: '',
       reloadDialog: false,
     }
   },
@@ -117,7 +115,6 @@ export default {
       this.weblink = config.webHost
     }
 
-    this.userAgent = navigator.appName + ' ' + navigator.appCodeName + ' ' + navigator.appVersion
     var ak = localStorage.getItem('authkey')
     if (ak) { // 判断是否存在
       this.getAuthkeyInfo(ak).then((res) => { // 判断是否存活
