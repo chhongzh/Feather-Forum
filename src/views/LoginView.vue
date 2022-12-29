@@ -58,7 +58,6 @@ export default {
                     } else {
                         this.$message.success(request.data.msg)
                         localStorage.setItem('authkey', request.data.data.authkey)
-                        localStorage.setItem('needRef', '/')
                         this.$store.commit('login')
                         this.$store.commit('name', this.nm)
                         this.$router.push("/")
