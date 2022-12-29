@@ -38,10 +38,6 @@ export default {
                 }
             })
 
-        } else {
-            this.$message.error(this.$t('message.loginFail'))
-            delLocalAuthkey()
-            this.$router.push('/login')
         }
 
     },
