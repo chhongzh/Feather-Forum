@@ -13,6 +13,10 @@
 </template>
 
 <script>
+import { getLocalAuthkey } from '@/lib/auth'
+import { validateAuthkey } from '@/lib/auth'
+import { delLocalAuthkey } from '@/lib/auth'
+
 export default {
     data() {
         return {
@@ -24,19 +28,20 @@ export default {
     },
     mounted() {
         this.markdown = ''
-        var ak = localStorage.getItem('authkey')
+        var ak = getLocalAuthkey()
         if (!ak) {
-            this.$http.post("/api/authkey/v", {
-                authkey: ak
-            }).then((res) => {
-                if (!res.data.data.authkey) {
-                    this.$message.error(this.$t('message.loginFail'));
-                    localStorage.removeItem('authkey')
-                    this.$router.push("/login")
+            validateAuthkey(ak).then((res) => {
+                if (!res.data.authkey) {
+                    this.$message.error(this.$t('message.loginFail'))
+                    delLocalAuthkey()
+                    this.$router.push('/login')
                 }
-
             })
 
+        } else {
+            this.$message.error(this.$t('message.loginFail'))
+            delLocalAuthkey()
+            this.$router.push('/login')
         }
 
     },

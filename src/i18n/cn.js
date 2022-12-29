@@ -46,6 +46,12 @@ const cn = {
   lang: "简体中文",
   langTip: "语言切换成功!",
   langMessage: "当前语言为:简体中文",
+  tip: "提示",
+  postNan: "无效的id",
+  copied: "成功拷贝!",
+  permission: "权限",
+  permissionDefault: "我们可能需要通知权限以执行部分服务",
+  permissionBlock: "您关闭了通知权限, 您可能无法及时收到消息",
 };
 
 export default cn;

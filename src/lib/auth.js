@@ -27,4 +27,21 @@ const getLocalAuthkey = () => {
   return globalThis.localStorage.getItem("authkey");
 };
 
-export { getAuthkeyInfo, validateAuthkey, getLocalAuthkey };
+/**
+ * 删除本地的authkey
+ */
+const delLocalAuthkey = () => {
+  globalThis.localStorage.removeItem("authkey");
+};
+
+const setLocalAuthkey = (authkey) => {
+  globalThis.localStorage.setItem("authkey", authkey);
+};
+
+export {
+  getAuthkeyInfo,
+  validateAuthkey,
+  getLocalAuthkey,
+  delLocalAuthkey,
+  setLocalAuthkey,
+};

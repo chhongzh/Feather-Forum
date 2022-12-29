@@ -46,6 +46,14 @@ const en = {
   lang: "English",
   langTip: "Language switch succeeded!",
   langMessage: "Current language: English",
+  tip: "Tip",
+  postNan: "Invalid id",
+  copied: "Copy done!",
+  permission: "Permission",
+  permissionDefault:
+    "We may need to notify permission to perform some services.",
+  permissionBlock:
+    "You have turned off the notification authority, and you may not receive messages in time.",
 };
 
 export default en;

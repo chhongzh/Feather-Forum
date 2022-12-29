@@ -27,9 +27,6 @@
                     <el-button-group>
                         <el-button @click="shareWithMail">邮箱</el-button>
                         <el-button @click="shareWithLink">链接</el-button>
-                        <el-input v-model="aaaaa" placeholder="Please input">
-                            <template #prepend>Http://</template>
-                        </el-input>
                     </el-button-group>
                 </el-popover>
             </el-row>
@@ -45,7 +42,10 @@ const { text, copy, copied, isSupported } = useClipboard(document.URL)
 
 <script>
 import { User, Calendar, Share } from '@element-plus/icons-vue'
+import { validateAuthkey, getLocalAuthkey, delLocalAuthkey } from '@/lib/auth'
+import { makeNotification } from '@/lib/utils'
 import { transformTime } from '../assets/js/date.js'
+import { getPost } from '@/lib/post'
 import config from '@/assets/js/config'
 export default {
     components: { User, Calendar, Share },
@@ -56,24 +56,21 @@ export default {
             postTime: '',
             postContent: '',
             postUid: '',
-            aaaaa: ''
         }
     },
     mounted() {
-        var ak = localStorage.getItem('authkey')
+        var ak = getLocalAuthkey()
         if (!ak) {
-            this.$http.post("/api/authkey/v", {
-                authkey: ak
-            }).then((res) => {
-                if (!res.data.data.authkey) {
-                    this.$message.error('未登录或登录过期,请重新登陆');
-                    localStorage.removeItem('authkey')
+            validateAuthkey(ak).then((res) => {
+                if (!res.data.authkey) {
+                    makeNotification("", this.$t('message.loginFail'))
+                    delLocalAuthkey()
                     this.$router.push("/login")
                 }
             })
         }
         if (isNaN(this.$route.params.pid)) {
-            this.$message.error('非法帖子id');
+            makeNotification('', this.$t('message.postNan'))
             this.$router.push('/')
         }
         if ((this.$store.state.post.pid != 0) && this.$store.state.post.pid == this.$route.params.pid) {
@@ -83,30 +80,26 @@ export default {
             this.postTime = transformTime(this.$store.state.post.time * 1000) // 修复 issues #5
             this.postUid = this.$store.state.post.uid
         } else {
-            this.$http.post('/api/post/read', {
-                authkey: localStorage.getItem('authkey'),
-                pid: this.$route.params.pid
-            }).then((res) => {
-                if (res.data.code = 200) {
-                    this.$store.commit('setpost', {
-                        pid: this.$route.params.pid,
-                        content: res.data.data.content,
-                        title: res.data.data.title,
-                        auth: res.data.data.name,
-                        time: res.data.data.time,
-                        uid: res.data.data.uid,
-                    })
-                    this.postTitle = res.data.data.title
-                    this.postAuther = res.data.data.name
-                    this.postContent = res.data.data.content
-                    this.postTime = res.data.data.time
-                    this.postTime = transformTime(this.postTime * 1000)
-                }
+            getPost(this.$route.params.pid, ak).then((res) => {
+                this.$store.commit('setpost', {
+                    pid: this.$route.params.pid,
+                    content: res.data.content,
+                    title: res.data.title,
+                    auth: res.data.name,
+                    time: res.data.time,
+                    uid: res.data.uid,
+                })
+                this.postTitle = res.data.title
+                this.postAuther = res.data.name
+                this.postContent = res.data.content
+                this.postTime = res.data.time
+                this.postTime = transformTime(this.postTime * 1000)
             }).catch((res) => {
-                this.$message.error(this.$t('message.networkError'));
+                makeNotification('', this.$t('message.networkError'))
                 this.$router.push('/')
             })
         }
+
     },
     methods: {
         shareWithMail() {
@@ -117,7 +110,7 @@ export default {
         },
         shareWithLink() {
             this.copy(document.URL)
-            this.$message.success('链接已经复制!')
+            makeNotification('', this.$t('message.copied'))
         }
     }
 }
