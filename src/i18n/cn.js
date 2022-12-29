@@ -43,6 +43,9 @@ const cn = {
   checkPassword: "确认密码",
   email: "邮箱",
   notValidate: "无法验证您的密码,请重试",
+  lang: "简体中文",
+  langTip: "语言切换成功!",
+  langMessage: "当前语言为:简体中文",
 };
 
 export default cn;

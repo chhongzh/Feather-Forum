@@ -43,6 +43,9 @@ const en = {
   checkPassword: "Confrim password",
   email: "Mail",
   notValidate: "Can't confrim your password",
+  lang: "English",
+  langTip: "Language switch succeeded!",
+  langMessage: "Current language: English",
 };
 
 export default en;

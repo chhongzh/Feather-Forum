@@ -66,12 +66,12 @@
       <div class="foot-layout-right">
         <el-dropdown>
           <span class="el-dropdown-link">
-            语言
+            {{ $t('message.lang') }}
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="$i18n.locale = 'cn'">简体中文</el-dropdown-item>
-              <el-dropdown-item @click="$i18n.locale = 'en'">English</el-dropdown-item>
+              <el-dropdown-item @click="switchLang('cn')">简体中文</el-dropdown-item>
+              <el-dropdown-item @click="switchLang('en')">English</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -96,11 +96,12 @@
 
 <script setup>
 import { setWindowTitle } from '@/lib/utils'
-import cn from '@/i18n/cn'
 </script>
 
 <script>
 import config from '@/config/web'
+import { ElNotification } from 'element-plus';
+import { makeNotification } from '@/lib/utils'
 export default {
   data() {
     return {
@@ -185,6 +186,21 @@ export default {
      */
     getAuthkeyInfo(authkey) {
       return this.post("/api/user/info", { authkey: authkey });
+    },
+    /**
+     * 更改语言
+     * @param {string} lang 需要改变的语言
+     */
+    switchLang(lang) {
+      this.$i18n.locale = lang
+      // ElNotification(
+      //   {
+      //     'title': "你好",
+      //     "message": "asdf",
+      //     'position': 'bottom-left',
+      //   }
+      // )
+      makeNotification(this.$t('message.langTip'), this.$t('message.langMessage'))
     }
   },
 }
