@@ -73,7 +73,7 @@ export default {
             makeNotification('', this.$t('message.postNan'))
             this.$router.push('/')
         }
-        if ((this.$store.state.post.pid != 0) && this.$store.state.post.pid == this.$route.params.pid) {
+        if (this.$store.state.post.pid && this.$store.state.post.pid == this.$route.params.pid) {
             this.postTitle = this.$store.state.post.title
             this.postAuther = this.$store.state.post.auth
             this.postContent = this.$store.state.post.content
