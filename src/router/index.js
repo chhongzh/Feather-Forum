@@ -11,11 +11,17 @@ const routes = [
     path: "/login",
     name: "登录",
     component: () => import("../views/LoginView.vue"),
+    meta: {
+      hideLoginTip: true,
+    },
   },
   {
     path: "/register",
     name: "注册",
     component: () => import("../views/RegisterView.vue"),
+    meta: {
+      hideLoginTip: true,
+    },
   },
   {
     path: "/my",

@@ -30,7 +30,7 @@
     </el-affix>
     <el-main>
       <div class="foot-space"></div>
-      <div v-show="!($store.state.login || $route.meta.hideHeader)">
+      <div v-show="!(($store.state.login || $route.meta.hideHeader) || $route.meta.hideLoginTip)">
         <el-card>
           <div>
             <p>{{ $t('message.plzLogin') }}</p>
