@@ -7,8 +7,8 @@ Feather-Forum主配置文件
 
 
 class Config(object):
-    Host = None
-    UseDebugMode = True
-    ServerPort = 14524
-    SecretKey = 'Feather-Forum Demo on Debug Mode !'
-    DbPath = 'data.db3'
+    Host = None  # flask监听的地址
+    UseDebugMode = True  # 使用debug模式
+    ServerPort = 14524  # flask监听的端口
+    SecretKey = 'Feather-Forum Demo on Debug Mode !'  # 秘钥, 必须修改
+    DbPath = 'data.db3'  # 数据库地址
