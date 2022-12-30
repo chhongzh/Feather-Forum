@@ -8,6 +8,9 @@
 </template>
 
 <script>
+import { makeNotification } from '@/lib/utils'
+import { delLocalAuthkey } from '@/lib/auth'
+
 export default {
     data() {
         return {
@@ -23,21 +26,21 @@ export default {
                 if (res.data.data.authkey) {
                     this.uname = res.data.data.name
                 } else {
-                    localStorage.removeItem('authkey')
-                    this.$message.error(this.$t('message.noLogin'));
+                    delLocalAuthkey()
+                    makeNotification(this.$t('message.hint'), this.$t('message.notLogin'))
                     this.$router.push('/')
                 }
             })
         } else {
-            this.$message.error(this.$t('message.noLogin'));
+            makeNotification(this.$t('message.hint'), this.$t('message.notLogin'))
             this.$store.commit('logout')
             this.$router.push('/')
         }
     },
     methods: {
         logout() {
-            window.localStorage.removeItem('authkey')
-            this.$message.success(this.$t('message.logoutDone'));
+            delLocalAuthkey()
+            makeNotification(this.$t('message.hint'), this.$t('message.logoutDone'))
             this.$store.commit('name', '')
             this.$store.commit('logout')
             this.$router.push('/login')

@@ -53,6 +53,7 @@ const cn = {
   permissionDefault: "我们可能需要通知权限以执行部分服务",
   permissionBlock: "您关闭了通知权限, 您可能无法及时收到消息",
   registerDone: "你的账户已注册",
+  hint: "提示",
 };
 
 export default cn;
