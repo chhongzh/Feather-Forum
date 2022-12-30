@@ -1,13 +1,11 @@
 安装Feather-Forum
 -------------------
-在安装之前, **你需要在目标设备上安装Python3和Node**
+在安装之前, **你需要在目标设备上安装Python3和Node和Vue**
 
 **注意**:Feather-Forum正处于**快速开发**阶段, 它拥有一切的*不稳定性*和*未知性* 欢迎你提出**issuse**和**pull request**
 
 步骤1
 -------
-哦对了! 在此之前你**需要先安装**`Vue3`, `Yarn`, `Python`, **稍后会用到**
-
 **下载**或**克隆**此仓库:
 
 ```shell
@@ -19,6 +17,8 @@ cd Feather-Forum
 ```shell
 pip install flask
 pip install rich
+
+npm install yarn --location=global
 
 yarn install
 ```
