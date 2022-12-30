@@ -9,11 +9,13 @@
                     <el-button @click="logout" type="primary">{{ $t('message.logout') }}</el-button>
                 </el-tab-pane>
                 <el-tab-pane label="账户">Config</el-tab-pane>
-                <el-tab-pane label="消息">
-                    <div v-if="renderNotification">
-                        <p>我们检查到您的浏览器拒绝了消息请求, 因此您可能无法及时收到消息</p>
-                        <p>也有可能是因为检测失误, 您可以点击下方按钮进行测试</p>
-                        <el-button :disabled="testDisabled" @click="testNotification">{{ test }}</el-button>
+                <el-tab-pane label="通知">
+                    <div v-show="renderNotification">
+                        <p>我们检查到您的浏览器拒绝了通知权限, 因此您可能无法及时收到消息</p>
+                        <p>若要打开, 请前往设置中打开本网站"通知"权限</p>
+                    </div>
+                    <div v-show="!renderNotification">
+                        <p>您可以接收本网站的通知, 一切都是正常的</p>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="更多"></el-tab-pane>
@@ -30,7 +32,7 @@ export default {
     data() {
         return {
             uname: '',
-            renderNotification: true,
+            renderNotification: false,
             test: "测试",
             testDisabled: false
         }
@@ -55,15 +57,8 @@ export default {
             this.$router.push('/')
         }
 
-        if (Notification.permission == "default") {
-            this.test = "您还未同意请求"
-            this.testDisabled = false
-        } else if (Notification.permission == "denied") {
-            this.test = "您拒绝了请求"
-            this.testDisabled = true
-        } else {
-            this.test = "您同意了请求"
-            this.testDisabled = true
+        if (Notification.permission != "granted") {
+            this.renderNotification = true
         }
     },
     methods: {
@@ -73,20 +68,6 @@ export default {
             this.$store.commit('name', '')
             this.$store.commit('logout')
             this.$router.push('/login')
-        },
-        testNotification() {
-            this.test = "测试中..."
-            this.testDisabled = true
-            Notification.requestPermission((permissions) => {
-                if (permissions == "granted") {
-                    this.test = "您同意了请求"
-                } else if (permissions == "denied") {
-                    this.test = "您拒绝了请求"
-                } else {
-                    this.test = "您还未同意请求"
-                    this.testDisabled = false
-                }
-            })
         }
     }
 }
