@@ -46,14 +46,7 @@ git clone https://github.com/chhongzh/Feather-Forum.git
 ```
 
 ### 安装
-```shell
-cd Feather-Forum
-
-python installer.py
-# or python3
-python3 installer.py
-```
-根据提示打开在线安装网页并完成安装
+详见[install.md](/docs/install.md)
 
 ## 协议
 
