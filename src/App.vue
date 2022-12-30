@@ -41,6 +41,7 @@
       <!-- Router -->
       <router-view :key="$route.fullPath" />
       <!-- End router -->
+      <el-backtop />
     </el-main>
     <el-footer v-show="!$route.meta.hideFooter" class="little">
       <div class="foot-space"></div>
