@@ -82,7 +82,6 @@
 
     </el-footer>
   </el-container>
-
   <el-dialog v-model="reloadDialog" :title="$t('message.reload') + '?'" width="30%">
     <span>{{ $t('message.sureReload') }}<br>{{ $t('message.dataLoss') }}</span>
     <template #footer>
@@ -141,7 +140,7 @@ export default {
       } else if (permission == 'granted') {
 
       } else {
-        makeNotification(this.$('message.permission'), this.$t('message.permissionDefault'))
+        makeNotification(this.$t('message.permission'), this.$t('message.permissionDefault'))
       }
     }); // 申请权限
 
